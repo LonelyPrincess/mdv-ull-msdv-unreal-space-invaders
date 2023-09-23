@@ -14,4 +14,8 @@ class SPACEINVADERS_API ASIGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+
+	ASIGameModeBase();
+
 };
