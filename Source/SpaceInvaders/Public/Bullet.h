@@ -6,6 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "Bullet.generated.h"
 
+// Enum with bullet types
+UENUM(BlueprintType)
+enum class BulletType : uint8 {
+	PLAYER = 0 UMETA(DisplayName = "Player Type"),
+	INVADER = 1 UMETA(DisplayName = "Invader Type")
+};
+
 UCLASS()
 class SPACEINVADERS_API ABullet : public AActor
 {

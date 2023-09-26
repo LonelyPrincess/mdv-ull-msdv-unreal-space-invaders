@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/DefaultPawn.h"
+#include "Bullet.h"
 #include "SIPawn.generated.h"
 
 UCLASS()
@@ -18,6 +19,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender Config")
 	float velocity = 100.0f;
 
+	// This property will be used to store the base class we'll use for bullets
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender Config")
+	TSubclassOf<class ABullet> bulletClass;
+
 private: 
 
 	// Flag to indicate if pawn is in a frozen state (no moving and firing capabilities)
@@ -25,6 +30,11 @@ private:
 
 	// Flag that indicates if game is paused
 	bool bPause;
+
+	// We always need to add UPROPERTY annotation when declaring references to UE objects (ex.: actors)
+	// This ensures that UE will handle them and prevent memory leaks, since UE will automatically delete it when not needed
+	UPROPERTY()
+	class ABullet* bulletTemplate;
 
 public:
 
