@@ -19,14 +19,14 @@ void ASIPawn::BeginPlay()
 	Super::BeginPlay();
 
 	// Generate a Bullet Template of the correct class
-	if (bulletClass->IsChildOf<ABullet>())
+	/*if (bulletClass->IsChildOf<ABullet>())
 		// If bullet class is an extension of ABullet, use it to instantiate the bullet
 		bulletTemplate = NewObject<ABullet>(this, bulletClass);
 	else
 		// If specified class is not valid, we'd use ABullet base class by default
 		bulletTemplate = NewObject<ABullet>(this);
 
-	/*bulletTemplate->bulletType = BulletType::PLAYER;
+	bulletTemplate->bulletType = BulletType::PLAYER;
 
 	if (AudioComponent != nullptr && AudioShoot != nullptr) {
 		AudioComponent->SetSound(AudioShoot);
