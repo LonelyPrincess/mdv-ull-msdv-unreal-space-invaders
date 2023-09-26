@@ -5,8 +5,10 @@
 
 // Sets default values
 ASIPawn::ASIPawn()
+	: bFrozen{ false },		// Initialize class props
+	bPause{ false }			// It's important that they appear in same order as in the ".h" file
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this pawn to call Tick() every frame. You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
