@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/DefaultPawn.h"
 #include "SIPawn.generated.h"
 
 UCLASS()
-class SPACEINVADERS_API ASIPawn : public APawn
+class SPACEINVADERS_API ASIPawn : public ADefaultPawn
 {
 	GENERATED_BODY()
 
