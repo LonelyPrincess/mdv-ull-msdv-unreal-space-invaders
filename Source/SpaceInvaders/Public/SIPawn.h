@@ -4,7 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/DefaultPawn.h"
+#include "Components/StaticMeshComponent.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 #include "Bullet.h"
+
 #include "SIPawn.generated.h"
 
 UCLASS()
@@ -23,6 +28,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender Config")
 	TSubclassOf<class ABullet> bulletClass;
 
+	// Sound that will run when user shoots
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender config")
+	class USoundCue* AudioShoot;
+
+	// Velocity of the player bullets
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender config")
+	float bulletVelocity = 3000.0f;
+
+
 private: 
 
 	// Flag to indicate if pawn is in a frozen state (no moving and firing capabilities)
@@ -35,6 +49,9 @@ private:
 	// This ensures that UE will handle them and prevent memory leaks, since UE will automatically delete it when not needed
 	UPROPERTY()
 	class ABullet* bulletTemplate;
+
+	UPROPERTY()
+	class UAudioComponent* AudioComponent;
 
 public:
 

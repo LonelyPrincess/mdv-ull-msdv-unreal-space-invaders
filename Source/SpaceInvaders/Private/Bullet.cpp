@@ -22,7 +22,6 @@ ABullet::ABullet()
 
 }
 
-
 // Called when the game starts or when spawned
 void ABullet::BeginPlay()
 {
@@ -34,6 +33,11 @@ void ABullet::BeginPlay()
 void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// This will make the bullet automatically move in a direction on each render
+	FVector location = GetActorLocation();
+	location += DeltaTime * velocity * dir;
+	SetActorLocation(location);
 
 }
 
