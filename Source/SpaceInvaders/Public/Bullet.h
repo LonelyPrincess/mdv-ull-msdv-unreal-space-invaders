@@ -46,6 +46,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// Collision event handler
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
 public:	
 
 	// Called every frame
@@ -57,5 +60,9 @@ public:
 private:
 
 	static constexpr const TCHAR* defaultStaticMeshPath = TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'");
+
+	// This variable contains list of objects that will cause the bullet to self-destruct
+	// "FName" is the right datatype to store tags in UE
+	FName autoDestroyTags[4] = { TEXT("BottomLimit"), TEXT("RightLimit"), TEXT("LeftLimit"), TEXT("TopLimit") };
 
 };

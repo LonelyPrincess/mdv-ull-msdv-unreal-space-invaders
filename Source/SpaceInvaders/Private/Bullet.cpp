@@ -67,3 +67,15 @@ void ABullet::SetBulletMesh(UStaticMesh* staticMesh, FString path, FVector scale
 	}
 
 }
+
+// Handle collision with other actors in the scene
+void ABullet::NotifyActorBeginOverlap(AActor* OtherActor) {
+	// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Bullet overlapped with %s"), *(OtherActor->GetName())));
+
+	// Bullet will self-destruct if it collides with any element containing the tags defined in "autoDestroyTags"
+	for (FName tag : autoDestroyTags) {
+		if (OtherActor->ActorHasTag(tag)) {
+			Destroy();
+		}
+	}
+}
