@@ -30,15 +30,16 @@ void ASIPawn::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("Selected bullet class is either empty or invalid, so default class will be used..."));
 
 		// If specified class is not valid, we'd use ABullet base class by default
+		bulletClass = ABullet::StaticClass();
 		bulletTemplate = NewObject<ABullet>(this);
 	}
 
-	/*bulletTemplate->bulletType = BulletType::PLAYER;
+	bulletTemplate->bulletType = BulletType::PLAYER;
 
 	// Assign sound that will be played on shoot
 	if (AudioComponent != nullptr && AudioShoot != nullptr) {
 		AudioComponent->SetSound(AudioShoot);
-	}*/
+	}
 
 }
 
@@ -85,10 +86,12 @@ void ASIPawn::OnMove(float value) {
 // Handler for shoot event
 void ASIPawn::OnFire() {
 
+	UE_LOG(LogTemp, Display, TEXT("Fire event triggered!"));
+
 	if (bFrozen)
 		return;
 
-	/*FVector spawnLocation = GetActorLocation();
+	FVector spawnLocation = GetActorLocation();
 	FRotator spawnRotation = GetActorRotation();
 	ABullet* spawnedBullet;
 	bulletTemplate->velocity = bulletVelocity;
@@ -101,12 +104,14 @@ void ASIPawn::OnFire() {
 	spawnedBullet = Cast<ABullet>(GetWorld()->SpawnActor(bulletClass, &spawnLocation, &spawnRotation, spawnParameters));
 
 	// Reproduce a sound when the user shoots
-	AudioComponent->Play();*/
+	// AudioComponent->Play();
 
 }
 
 // Handler for pause event
 void ASIPawn::OnPause() {
+
+	UE_LOG(LogTemp, Display, TEXT("Pause event triggered!"));
 
 	bPause = !bPause;
 
