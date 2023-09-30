@@ -21,16 +21,19 @@ ASIPawn::ASIPawn()
 void ASIPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	/*
+	
 	// Generate a Bullet Template of the correct class
-	if (bulletClass->IsChildOf<ABullet>())
+	if (bulletClass != nullptr && bulletClass->IsChildOf<ABullet>())
 		// If bullet class is an extension of ABullet, use it to instantiate the bullet
 		bulletTemplate = NewObject<ABullet>(this, bulletClass);
-	else
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Selected bullet class is either empty or invalid, so default class will be used..."));
+
 		// If specified class is not valid, we'd use ABullet base class by default
 		bulletTemplate = NewObject<ABullet>(this);
+	}
 
-	bulletTemplate->bulletType = BulletType::PLAYER;
+	/*bulletTemplate->bulletType = BulletType::PLAYER;
 
 	// Assign sound that will be played on shoot
 	if (AudioComponent != nullptr && AudioShoot != nullptr) {
