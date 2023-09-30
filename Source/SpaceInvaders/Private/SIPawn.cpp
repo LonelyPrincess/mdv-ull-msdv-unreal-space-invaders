@@ -21,7 +21,7 @@ ASIPawn::ASIPawn()
 void ASIPawn::BeginPlay()
 {
 	Super::BeginPlay();
-
+	/*
 	// Generate a Bullet Template of the correct class
 	if (bulletClass->IsChildOf<ABullet>())
 		// If bullet class is an extension of ABullet, use it to instantiate the bullet
@@ -35,7 +35,7 @@ void ASIPawn::BeginPlay()
 	// Assign sound that will be played on shoot
 	if (AudioComponent != nullptr && AudioShoot != nullptr) {
 		AudioComponent->SetSound(AudioShoot);
-	}
+	}*/
 
 }
 
@@ -85,7 +85,7 @@ void ASIPawn::OnFire() {
 	if (bFrozen)
 		return;
 
-	FVector spawnLocation = GetActorLocation();
+	/*FVector spawnLocation = GetActorLocation();
 	FRotator spawnRotation = GetActorRotation();
 	ABullet* spawnedBullet;
 	bulletTemplate->velocity = bulletVelocity;
@@ -98,7 +98,7 @@ void ASIPawn::OnFire() {
 	spawnedBullet = Cast<ABullet>(GetWorld()->SpawnActor(bulletClass, &spawnLocation, &spawnRotation, spawnParameters));
 
 	// Reproduce a sound when the user shoots
-	AudioComponent->Play();
+	AudioComponent->Play();*/
 
 }
 
