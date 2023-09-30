@@ -19,8 +19,12 @@ class SPACEINVADERS_API ASIPawn : public ADefaultPawn
 
 public:
 
-	// EditAnywhere allows modifying value of this prop anywhere
-	// BlueprintReadWrite allows seeing and modifying this value from BP editor
+	// Notes about UPROPERTY:
+	// - EditAnywhere allows modifying value of the prop anywhere
+	// - BlueprintReadWrite allows seeing and modifying the value of the property directly from BP editor
+	// - Category can be set to organize properies in specific sections of the object details tab in the BP editor
+
+	// Movement speed of the pawn
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender Config")
 	float velocity = 100.0f;
 
