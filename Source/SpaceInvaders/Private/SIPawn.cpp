@@ -11,7 +11,7 @@ ASIPawn::ASIPawn()
  	// Set this pawn to call Tick() every frame. You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Initialize audio component
+	// Initialize audio component that will be added to current actor and follow them around
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio");
 	AudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 
@@ -32,6 +32,7 @@ void ASIPawn::BeginPlay()
 
 	bulletTemplate->bulletType = BulletType::PLAYER;
 
+	// Assign sound that will be played on shoot
 	if (AudioComponent != nullptr && AudioShoot != nullptr) {
 		AudioComponent->SetSound(AudioShoot);
 	}
@@ -89,11 +90,14 @@ void ASIPawn::OnFire() {
 	ABullet* spawnedBullet;
 	bulletTemplate->velocity = bulletVelocity;
 	bulletTemplate->dir = GetActorForwardVector();
+
+	// Spawn bullets based on the selected template
 	FActorSpawnParameters spawnParameters;
 	spawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	spawnParameters.Template = bulletTemplate;
 	spawnedBullet = Cast<ABullet>(GetWorld()->SpawnActor(bulletClass, &spawnLocation, &spawnRotation, spawnParameters));
 
+	// Reproduce a sound when the user shoots
 	AudioComponent->Play();
 
 }
