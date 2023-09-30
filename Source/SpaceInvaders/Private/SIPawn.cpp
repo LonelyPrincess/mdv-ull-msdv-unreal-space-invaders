@@ -104,7 +104,7 @@ void ASIPawn::OnFire() {
 	spawnedBullet = Cast<ABullet>(GetWorld()->SpawnActor(bulletClass, &spawnLocation, &spawnRotation, spawnParameters));
 
 	// Reproduce a sound when the user shoots
-	// AudioComponent->Play();
+	AudioComponent->Play();
 
 }
 
