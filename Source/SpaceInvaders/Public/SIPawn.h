@@ -29,6 +29,7 @@ public:
 	float velocity = 100.0f;
 
 	// This property will be used to store the base class we'll use for bullets
+	// With "TSubclassOf" we indicate that only possible choice is for a classes inheriting from ABullet
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender Config")
 	TSubclassOf<class ABullet> bulletClass;
 

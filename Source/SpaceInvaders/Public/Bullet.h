@@ -26,14 +26,15 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	BulletType bulletType = BulletType::PLAYER;
 
-
+	// Static mesh for bullet
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* Mesh;
 
-
+	// Direction in which the bullet will move
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector dir;
 
+	// Speed at which the bullet will move
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float velocity;
 

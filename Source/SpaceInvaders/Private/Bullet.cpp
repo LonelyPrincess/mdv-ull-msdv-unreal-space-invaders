@@ -12,6 +12,7 @@ ABullet::ABullet()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Here we add a static mesh component to the bullet's actor component hierarchy
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("BaseMeshComponent");
 	RootComponent = Mesh; // We need a RootComponent to have a base transform
 	SetBulletMesh();
