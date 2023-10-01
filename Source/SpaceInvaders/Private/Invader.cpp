@@ -2,6 +2,7 @@
 
 
 #include "Invader.h"
+#include "SIGameModeBase.h"
 
 // Sets default values
 AInvader::AInvader()
@@ -132,33 +133,62 @@ void AInvader::Fire() {
 
 void AInvader::NotifyActorBeginOverlap(AActor* OtherActor) {
 
+	// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("%s entered me"), *(OtherActor->GetName())));
+
 	FName actorTag;
 
 	// If invader is on frozen state (either dead or game is paused), do nothing
 	if (bFrozen)
 		return;
 
-	UClass* otherActorClass = OtherActor->GetClass();
+	UWorld* TheWorld = GetWorld();
+	if (TheWorld != nullptr) {
+		UInvaderMovementComponent* imc = (UInvaderMovementComponent*)this->GetComponentByClass(UInvaderMovementComponent::StaticClass());
+		bool bFreeJump = imc->state == InvaderMovementType::FREEJUMP;
+		AGameModeBase* GameMode = UGameplayStatics::GetGameMode(TheWorld);
+		ASIGameModeBase* MyGameMode = Cast<ASIGameModeBase>(GameMode);
+		UClass* otherActorClass = OtherActor->GetClass();
 
-	// Handle collisions with bullet items
-	if (OtherActor->IsA(ABullet::StaticClass())) { // Reflection!
-		ABullet* bullet = Cast<ABullet>(OtherActor);
+		// Handle collisions with bullet items
+		if (OtherActor->IsA(ABullet::StaticClass())) {
+			ABullet* bullet = Cast<ABullet>(OtherActor);
 
-		// Invader dies if they collide with a bullet shot by the player
-		if (bullet->bulletType == BulletType::PLAYER) {
-			//GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Invader %d killed"), this->positionInSquad));
+			// Invader dies if they collide with a bullet shot by the player
+			if (bullet->bulletType == BulletType::PLAYER) {
+				// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Invader %d killed"), this->positionInSquad));
 
-			OtherActor->Destroy();
-			InvaderDestroyed();
+				OtherActor->Destroy();
+				// Trigger event indicating invader has been killed
+				MyGameMode->InvaderDestroyed.Broadcast(this->positionInSquad);
+				InvaderDestroyed();
+				return;
+			}
+			else
+				return; // It's an invader bullet, so it has to be ignored
+		}
+
+		// Overlap with other invaders is ignored
+		if (OtherActor->IsA(AInvader::StaticClass()))
+			return;
+
+		// Overlap with anything in freejump (except invaders and their own bullets) causes a silent destroy
+		if (bFreeJump) {
+			MyGameMode->InvaderDestroyed.Broadcast(this->positionInSquad);
+			Destroy();
 			return;
 		}
-		else
-			return; //It's an invader bullet, so it has to be ignored
-	}
 
-	// Overlap with other invaders is ignored
-	if (OtherActor->IsA(AInvader::StaticClass()))
-		return;
+		// Trigger events when invader collides with any of the map bounds (left, right or bottom)
+		if (OtherActor->ActorHasTag(leftSideTag) && !bFreeJump) {
+			MyGameMode->SquadOnLeftSide.ExecuteIfBound();
+		}
+		else if (OtherActor->ActorHasTag(rightSideTag) && !bFreeJump) {
+			MyGameMode->SquadOnRightSide.ExecuteIfBound();
+		}
+		else if (OtherActor->ActorHasTag(downSideTag) && !bFreeJump) {
+			MyGameMode->SquadSuccessful.ExecuteIfBound(); // Squad wins!
+		}
+	}
 
 }
 

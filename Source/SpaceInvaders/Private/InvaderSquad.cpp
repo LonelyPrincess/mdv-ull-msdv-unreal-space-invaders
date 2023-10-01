@@ -2,6 +2,7 @@
 
 
 #include "InvaderSquad.h"
+#include "SIGameModeBase.h"
 
 // Sets default values
 // Order in which params show up in initialization list must match the order in which props were defined in the defintion file (".h")
@@ -28,6 +29,24 @@ AInvaderSquad::AInvaderSquad()
 void AInvaderSquad::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UWorld* TheWorld = GetWorld();
+
+	// Bind to delegates
+	if (TheWorld != nullptr) {
+		AGameModeBase* GameMode = UGameplayStatics::GetGameMode(TheWorld);
+		MyGameMode = Cast<ASIGameModeBase>(GameMode);
+
+		if (MyGameMode != nullptr) {
+			// Subscribe to events we will receive
+			MyGameMode->SquadOnRightSide.BindUObject(this, &AInvaderSquad::SquadOnRightSide);
+			MyGameMode->SquadOnLeftSide.BindUObject(this, &AInvaderSquad::SquadOnLeftSide);
+			MyGameMode->SquadFinishesDown.BindUObject(this, &AInvaderSquad::SquadFinishesDown);
+
+			// Identify methods that will trigger a specific event (?)
+			MyGameMode->InvaderDestroyed.AddUObject(this, &AInvaderSquad::RemoveInvader);
+		}
+	}
 
 	// Set Invader Template with default value for invaderClass
 	if (invaderClass != nullptr && invaderClass->IsChildOf<AInvader>())
@@ -135,6 +154,50 @@ void AInvaderSquad::UpdateSquadState(float delta) {
 			// Fire rate for bersek invaders will increase drastically, so they're more likely to attack the player
 			survivors[ind]->fireRate *= 100;
 			imc->state = InvaderMovementType::FREEJUMP;
+		}
+	}
+}
+
+// Event handler for squad having reached right limit
+void AInvaderSquad::SquadOnRightSide() {
+	previousState = InvaderMovementType::RIGHT;
+	state = InvaderMovementType::DOWN;
+}
+
+// Event handler for squad having reached left limit
+void AInvaderSquad::SquadOnLeftSide() {
+	previousState = InvaderMovementType::LEFT;
+	state = InvaderMovementType::DOWN;
+}
+
+// Event handler for invader to have descended enough and need to halt vertical movement
+void AInvaderSquad::SquadFinishesDown() {
+	static int32 countActions = 0;
+	++countActions;
+
+	if (countActions >= numberOfMembers) {
+		countActions = 0;
+		switch (previousState) {
+			case InvaderMovementType::RIGHT:
+				state = InvaderMovementType::LEFT;
+				break;
+			case InvaderMovementType::LEFT:
+				state = InvaderMovementType::RIGHT;
+				break;
+			default:
+				state = InvaderMovementType::STOP;
+		}
+	}
+}
+
+// Method to remove an invader from the squad when it dies
+void AInvaderSquad::RemoveInvader(int32 ind) {
+	SquadMembers[ind] = nullptr;
+	--this->numberOfMembers;
+	if (this->numberOfMembers == 0) {
+		if (MyGameMode != nullptr) {
+			// "ExecuteIfBound" triggers the "NewSquad" event when the current squad has lost all its members
+			MyGameMode->NewSquad.ExecuteIfBound(1); // parameter larger than 0 to avoid finishing game!
 		}
 	}
 }

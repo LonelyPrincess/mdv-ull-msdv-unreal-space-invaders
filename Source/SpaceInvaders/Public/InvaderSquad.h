@@ -98,4 +98,16 @@ private:
 	static constexpr const float defaultVerticalVelocity = 1000.0f;
 	static constexpr const float defaultExtraSeparation = 0.0f;
 
+private:
+
+	// Event handlers
+	void SquadOnLeftSide();
+	void SquadOnRightSide();
+	void SquadFinishesDown();
+	void RemoveInvader(int32 ind);
+
+	// Reference to game mode, which will be used to listen or emit events
+	UPROPERTY()
+	class ASIGameModeBase* MyGameMode;
+
 };

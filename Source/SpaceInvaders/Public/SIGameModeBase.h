@@ -11,6 +11,11 @@
 
 #include "SIGameModeBase.generated.h"
 
+// Delegates of this game:
+DECLARE_DELEGATE(FStandardDelegateSignature)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOneParamMulticastDelegateSignature, int32);
+DECLARE_DELEGATE_OneParam(FOneParamDelegateSignature, int32)
+
 /**
  * 
  */
@@ -44,5 +49,23 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	AInvaderSquad* spawnedInvaderSquad;
+
+public:
+
+	// We create delegates for supported event types		// Emitter -> Subscriber(s)
+	FStandardDelegateSignature SquadOnLeftSide;				// Invader -> Squad 
+	FStandardDelegateSignature SquadOnRightSide;			// Invader -> Squad
+	FStandardDelegateSignature SquadFinishesDown;			// Invader -> Squad
+	FStandardDelegateSignature SquadSuccessful;				// Invader -> Game Mode
+	FOneParamMulticastDelegateSignature InvaderDestroyed;	// Invader -> Squad, Player
+
+	FOneParamDelegateSignature NewSquad;					// Squad -> Game Mode 
+	FStandardDelegateSignature PlayerZeroLifes;				// Player -> Game Mode
+
+protected:
+
+	// Delegate bindings (event handling functions)
+	UFUNCTION(BlueprintCallable)
+	void OnNewSquad(int32 lifes);
 
 };

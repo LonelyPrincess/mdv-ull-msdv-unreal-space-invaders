@@ -22,6 +22,9 @@ void ASIGameModeBase::BeginPlay() {
 
 	Super::BeginPlay();
 
+	// Subscribe to event and select function to be called on event trigger
+	this->NewSquad.BindUObject(this, &ASIGameModeBase::OnNewSquad);
+
 	// Spawn a squad of invaders
 	RegenerateSquad();
 
@@ -37,6 +40,13 @@ void ASIGameModeBase::RegenerateSquad() {
 
 	// Generate squad in the specified location
 	if (InvaderSquadClass) {
+		AInvaderSquad* squad = Cast<AInvaderSquad>(InvaderSquadClass->GetDefaultObject());
 		this->spawnedInvaderSquad = Cast<AInvaderSquad>(GetWorld()->SpawnActor(InvaderSquadClass, &spawnLocation));
 	}
+}
+
+// Handler for new squad event
+void ASIGameModeBase::OnNewSquad(int32 lifes) {
+	// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Generating new squad...")));
+	RegenerateSquad();
 }
