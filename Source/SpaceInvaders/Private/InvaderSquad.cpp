@@ -127,6 +127,7 @@ void AInvaderSquad::UpdateSquadState(float delta) {
 	int32 countSurvivors = survivors.Num();
 
 	if (countSurvivors > 0 && val < (1.0 - FMath::Exp(-freeJumpRate * this->timeFromLastFreeJump))) {
+		UE_LOG(LogTemp, Display, TEXT("One of the squad units will enter free jump mode!"));
 		int32 ind = FMath::RandRange(0, countSurvivors - 1); // Randomly select one of the living invaders
 		UInvaderMovementComponent* imc = (UInvaderMovementComponent*)survivors[ind]->GetComponentByClass(UInvaderMovementComponent::StaticClass());
 		if (imc) {
