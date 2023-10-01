@@ -41,6 +41,7 @@ void AInvaderSquad::BeginPlay()
 	float radiusX = 0.0f;
 	float radiusY = 0.0f;
 
+	// Create a new invader on each cell of the squad grid
 	for (int i = 0; i < this->nCols; i++)
 	{
 		for (int j = 0; j < this->nRows; j++)
