@@ -4,8 +4,14 @@
 #include "InvaderSquad.h"
 
 // Sets default values
+// Order in which params show up in initialization list must match the order in which props were defined in the defintion file (".h")
 AInvaderSquad::AInvaderSquad()
-	: nRows{ AInvaderSquad::defaultNRows }
+	: state{ InvaderMovementType::STOP }
+	, previousState{ InvaderMovementType::STOP }
+	, freeJumpRate{ 0.0001 }
+	, horizontalVelocity{ 300.0 }
+	, verticalVelocity{ 300.0 }
+	, nRows{ AInvaderSquad::defaultNRows }
 	, nCols{ AInvaderSquad::defaultNCols }
 	, extraSeparation(AInvaderSquad::defaultExtraSeparation)
 	, numberOfMembers{ nRows * nCols }
@@ -65,13 +71,16 @@ void AInvaderSquad::BeginPlay()
 
 	this->numberOfMembers = count;
 
+	// By default, move to right
+	this->state = InvaderMovementType::RIGHT;
+
 }
 
 // Called every frame
 void AInvaderSquad::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	UpdateSquadState(DeltaTime);
 }
 
 // Method that will run when squad is destroyed
@@ -85,4 +94,46 @@ void AInvaderSquad::Destroyed() {
 
 	Super::Destroyed();
 
+}
+
+// Update movement direction of the squad based on current conditions
+void AInvaderSquad::UpdateSquadState(float delta) {
+
+	// Here we'll store all invaders that are still alive
+	TArray<AInvader*> survivors;
+
+	for (auto invader : SquadMembers) {
+		if (invader) { // If invader is not null, it means it's still part of the squad
+
+			// First, we get the movement component
+			UInvaderMovementComponent* imc = (UInvaderMovementComponent*)invader->GetComponentByClass(UInvaderMovementComponent::StaticClass());
+
+			// Now, its state is updated
+			if (imc) {
+				// We add invader to survivor list only if they're not currently in free jump mode
+				if (imc->state != InvaderMovementType::FREEJUMP) {
+					survivors.Emplace(invader);
+					imc->horizontalVelocity = horizontalVelocity;
+					imc->verticalVelocity = verticalVelocity;
+					imc->state = state;
+				}
+			}
+		}
+	}
+
+	// We fetch random number that will determine if any of the survivors also enter free jump mode
+	this->timeFromLastFreeJump += delta;
+	float val = FMath::RandRange(0.0f, 1.0f);
+	int32 countSurvivors = survivors.Num();
+
+	if (countSurvivors > 0 && val < (1.0 - FMath::Exp(-freeJumpRate * this->timeFromLastFreeJump))) {
+		int32 ind = FMath::RandRange(0, countSurvivors - 1); // Randomly select one of the living invaders
+		UInvaderMovementComponent* imc = (UInvaderMovementComponent*)survivors[ind]->GetComponentByClass(UInvaderMovementComponent::StaticClass());
+		if (imc) {
+			// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("%s on FreeJump"), *(imc->GetName())));
+			// Fire rate for bersek invaders will increase drastically, so they're more likely to attack the player
+			survivors[ind]->fireRate *= 100;
+			imc->state = InvaderMovementType::FREEJUMP;
+		}
+	}
 }

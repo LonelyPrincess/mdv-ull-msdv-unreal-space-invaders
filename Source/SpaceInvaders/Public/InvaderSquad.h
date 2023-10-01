@@ -6,8 +6,12 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Invader.h"
+#include "InvaderMovementComponent.h"
 
 #include "InvaderSquad.generated.h"
+
+// Forward declaration of this enum, when using "class" here we're telling the compiler this is defined elsewhere (the invader class, in this case)
+enum class InvaderMovementType : uint8;
 
 UCLASS()
 class SPACEINVADERS_API AInvaderSquad : public AActor
@@ -19,12 +23,35 @@ public:
 	UPROPERTY()
 	class USceneComponent* Root;
 
+	// Variable with current movement type of the whole squad
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad movement")
+	InvaderMovementType state;
+
+	// Previous movement type requested by squad controller
+	UPROPERTY(VisibleAnyWhere, BlueprintReadWrite, Category = "Squad movement")
+	InvaderMovementType previousState;
+
+	// Determine how frequent it's that a invader enters free jump mode
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad movement")
+	float freeJumpRate;
+
+	// Overall speed of the squad
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad movement")
+	float horizontalVelocity;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad movement")
+	float verticalVelocity;
+
 	AInvaderSquad();
 
 public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// Function that's used to set the movement type that will be applied to the whole squad
+	UFUNCTION(BlueprintCallable)
+	void UpdateSquadState(float delta);
 
 protected:
 
@@ -60,6 +87,9 @@ private:
 
 	UPROPERTY()
 	class AInvader* invaderTemplate;
+
+	// Variable where we'll store how much time has passed since an invader entered free jump mode
+	float timeFromLastFreeJump;
 
 	// Values for initializing defaults
 	static const int32 defaultNRows = 1;
