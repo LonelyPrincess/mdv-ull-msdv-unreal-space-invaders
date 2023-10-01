@@ -7,7 +7,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
+
 #include "Bullet.h"
+#include "InvaderMovementComponent.h"
 
 #include "Invader.generated.h"
 
@@ -40,6 +42,10 @@ public:
 	//	("TSubclassOf" guarantees one can only choose among those that inherit from "ABullet")
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSubclassOf<class ABullet> bulletClass;
+
+	// Movement component to use on invader
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UInvaderMovementComponent* Movement;
 
 	// Public Methods
 

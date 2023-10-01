@@ -29,6 +29,10 @@ AInvader::AInvader()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio");
 	AudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 
+	// Add movement component to the invader
+	// We do not use "AttachTo" in this case because this ain't a scene component, but an actor component which no transform element
+	Movement = CreateDefaultSubobject<UInvaderMovementComponent>("InvaderMoveComponent");
+	AddOwnedComponent(Movement); // Because UInvaderMovementComponent is only an Actor Component and not a Scene Component can't Attach To.
 }
 
 // Called when the game starts or when spawned
@@ -55,6 +59,12 @@ void AInvader::BeginPlay()
 void AInvader::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// If invader is in frozen state, change its movement type to stopped
+	if (bFrozen) {
+		Movement->state = InvaderMovementType::STOP;
+		return;
+	}
 
 	// Calculate time ellapsed since last shot
 	this->timeFromLastShot += DeltaTime;
