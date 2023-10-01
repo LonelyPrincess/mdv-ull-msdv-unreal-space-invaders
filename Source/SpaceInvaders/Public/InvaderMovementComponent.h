@@ -89,6 +89,9 @@ protected:
 
 private:
 
+	// Store ref to game mode to be able to trigger events
+	class ASIGameModeBase* MyGameMode;
+
 	// This stores the previous movement direction of the invader, so we can resume it later
 	//	(ex.: if user was moving right and then descends, this variable can be used to keep moving right once descend has finished)
 	InvaderMovementType previousState; // Store state in previous frame (to know when a state is beginning)
