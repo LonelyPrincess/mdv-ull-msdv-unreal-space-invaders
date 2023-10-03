@@ -23,6 +23,8 @@ ASIPawn::ASIPawn()
  	// Set this pawn to call Tick() every frame. You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// SetStaticMesh(); // Default mesh (SetStaticMesh with no arguments)
+
 	// Initialize audio component that will be added to current actor and follow them around
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio");
 	AudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
@@ -155,11 +157,15 @@ int32 ASIPawn::GetLifes() {
 // Handle collissions
 void ASIPawn::NotifyActorBeginOverlap(AActor* OtherActor) {
 
+	// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("%s collided with player"), *(OtherActor->GetName())));
+
 	if (!bFrozen) {
 		// User will die if collides with enemy bullet
 		if (OtherActor->IsA(ABullet::StaticClass())) {
 			ABullet* bullet = Cast<ABullet>(OtherActor);
+			UE_LOG(LogTemp, Display, TEXT("Collided with bullet"));
 			if (bullet->bulletType == BulletType::INVADER) {
+				UE_LOG(LogTemp, Display, TEXT("Collided with enemy bullet"));
 				OtherActor->Destroy();
 				DestroyPlayer();
 			}
@@ -167,6 +173,7 @@ void ASIPawn::NotifyActorBeginOverlap(AActor* OtherActor) {
 
 		// User will also die if collides directly with an invader
 		if (OtherActor->IsA(AInvader::StaticClass())) {
+			UE_LOG(LogTemp, Display, TEXT("Collided with invader"));
 			OtherActor->Destroy();
 			DestroyPlayer();
 		}
@@ -178,6 +185,9 @@ void ASIPawn::NotifyActorBeginOverlap(AActor* OtherActor) {
 void ASIPawn::DestroyPlayer() {
 	UWorld* TheWorld;
 	TheWorld = GetWorld();
+
+	UE_LOG(LogTemp, Display, TEXT("Player was hit!"));
+	// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Player should die"));
 
 	if (TheWorld) {
 
@@ -208,10 +218,13 @@ void ASIPawn::PostPlayerDestroyed() {
 
 	// If user has no more lives, trigger event
 	if (this->playerLifes == 0) {
+		UE_LOG(LogTemp, Display, TEXT("Player is dead"));
 		if (MyGameMode)
 			MyGameMode->PlayerZeroLifes.ExecuteIfBound();
 		return;
 	}
+
+	UE_LOG(LogTemp, Display, TEXT("Player will come back to life"));
 
 	// If user still had some lives left, restore the mesh and allow the user to keep moving
 	UStaticMeshComponent* LocalMeshComponent = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
