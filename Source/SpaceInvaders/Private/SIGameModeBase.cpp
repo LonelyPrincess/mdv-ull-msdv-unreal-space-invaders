@@ -23,7 +23,7 @@ void ASIGameModeBase::BeginPlay() {
 	Super::BeginPlay();
 
 	// Subscribe to event and select function to be called on event trigger
-	this->NewSquad.BindUObject(this, &ASIGameModeBase::OnNewSquad);
+	this->NewSquad.AddUObject(this, &ASIGameModeBase::OnNewSquad);
 
 	// Spawn a squad of invaders
 	RegenerateSquad();

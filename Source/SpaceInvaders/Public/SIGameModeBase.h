@@ -59,7 +59,7 @@ public:
 	FStandardDelegateSignature SquadSuccessful;				// Invader -> Game Mode
 	FOneParamMulticastDelegateSignature InvaderDestroyed;	// Invader -> Squad, Player
 
-	FOneParamDelegateSignature NewSquad;					// Squad -> Game Mode 
+	FOneParamMulticastDelegateSignature NewSquad;			// Squad -> Game Mode 
 	FStandardDelegateSignature PlayerZeroLifes;				// Player -> Game Mode
 
 protected:
