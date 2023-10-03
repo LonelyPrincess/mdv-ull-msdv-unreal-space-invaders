@@ -3,10 +3,22 @@
 
 #include "SIPawn.h"
 
+#include "SIGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ASIPawn::ASIPawn()
-	: bFrozen{ false },		// Initialize class props
-	bPause{ false }			// It's important that they appear in same order as in the ".h" file
+	: velocity{ 1000 },
+	AudioShoot{},
+	bulletVelocity{ 3000 },
+	bFrozen{ false },			// Initialize class props
+	bPause{ false },			// It's important that they appear in same order as in the ".h" file
+	pointsPerInvader{ 100 },
+	pointsPerSquad{ 1000 },
+	AudioExplosion{},
+	MyGameMode{},
+	playerPoints{ 0 },
+	playerLifes{ 3 }
 {
  	// Set this pawn to call Tick() every frame. You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -41,8 +53,19 @@ void ASIPawn::BeginPlay()
 		AudioComponent->SetSound(AudioShoot);
 	}
 
-}
+	// Subscribe to events
+	UWorld* TheWorld = GetWorld();
+	if (TheWorld != nullptr) {
+		AGameModeBase* GameMode = UGameplayStatics::GetGameMode(TheWorld);
+		MyGameMode = Cast<ASIGameModeBase>(GameMode);
+		if (MyGameMode) {
+			MyGameMode->InvaderDestroyed.AddUObject(this, &ASIPawn::InvaderDestroyed);
+			MyGameMode->SquadSuccessful.BindUObject(this, &ASIPawn::SquadSuccessful);
+			MyGameMode->NewSquad.AddUObject(this, &ASIPawn::SquadDissolved);
+		}
+	}
 
+}
 
 // Called every frame
 void ASIPawn::Tick(float DeltaTime)
@@ -115,4 +138,103 @@ void ASIPawn::OnPause() {
 
 	bPause = !bPause;
 
+}
+
+// Return current score
+int64 ASIPawn::GetPoints() {
+	return this->playerPoints;
+
+}
+
+// Return remaining lives of the user
+int32 ASIPawn::GetLifes() {
+	return this->playerLifes;
+
+}
+
+// Handle collissions
+void ASIPawn::NotifyActorBeginOverlap(AActor* OtherActor) {
+
+	if (!bFrozen) {
+		// User will die if collides with enemy bullet
+		if (OtherActor->IsA(ABullet::StaticClass())) {
+			ABullet* bullet = Cast<ABullet>(OtherActor);
+			if (bullet->bulletType == BulletType::INVADER) {
+				OtherActor->Destroy();
+				DestroyPlayer();
+			}
+		}
+
+		// User will also die if collides directly with an invader
+		if (OtherActor->IsA(AInvader::StaticClass())) {
+			OtherActor->Destroy();
+			DestroyPlayer();
+		}
+	}
+
+}
+
+// This triggers some effects when the player dies
+void ASIPawn::DestroyPlayer() {
+	UWorld* TheWorld;
+	TheWorld = GetWorld();
+
+	if (TheWorld) {
+
+		bFrozen = true; // Pawn can't move or fire while being destroyed
+
+		// Decrease amount of lives of the user
+		--this->playerLifes;
+
+		UStaticMeshComponent* LocalMeshComponent = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
+		// Hide Static Mesh Component
+		if (LocalMeshComponent != nullptr) {
+			LocalMeshComponent->SetVisibility(false);
+		}
+
+		// Play explosion sound
+		if (AudioComponent != nullptr && AudioExplosion != nullptr) {
+			AudioComponent->SetSound(AudioExplosion);
+			AudioComponent->Play();
+		}
+
+		// Wait a few seconds before removing item from scene
+		TheWorld->GetTimerManager().SetTimer(timerHandle, this, &ASIPawn::PostPlayerDestroyed, 3.0f, false);
+	}
+}
+
+// Function that's called after user dies
+void ASIPawn::PostPlayerDestroyed() {
+
+	// If user has no more lives, trigger event
+	if (this->playerLifes == 0) {
+		if (MyGameMode)
+			MyGameMode->PlayerZeroLifes.ExecuteIfBound();
+		return;
+	}
+
+	// If user still had some lives left, restore the mesh and allow the user to keep moving
+	UStaticMeshComponent* LocalMeshComponent = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
+	// Show Static Mesh Component
+	if (LocalMeshComponent != nullptr) {
+		LocalMeshComponent->SetVisibility(true);
+	}
+	// Unfrozing
+	bFrozen = false;
+
+}
+
+// Delegate responses:
+void ASIPawn::InvaderDestroyed(int32 id) {
+	this->playerPoints += this->pointsPerInvader;
+}
+
+void ASIPawn::SquadSuccessful() {
+	DestroyPlayer();
+	if (MyGameMode)
+		MyGameMode->NewSquad.Broadcast(this->playerLifes);
+}
+
+void ASIPawn::SquadDissolved(int32 val) {
+	this->playerPoints += this->pointsPerSquad;
 }

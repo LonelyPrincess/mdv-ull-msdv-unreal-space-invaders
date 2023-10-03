@@ -84,4 +84,58 @@ protected:
 
 	void OnPause();
 
+
+public:
+
+	// Points that will be awarded when pawn destroys an invader
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender config")
+	int32 pointsPerInvader;
+
+	// Points that will be given when pawn destroys a full squad
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender config")
+	int32 pointsPerSquad;
+
+	// Audios: Explossion
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender config")
+	class USoundCue* AudioExplosion;
+
+	// Overlap event handler
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+	// Getters and Setters
+
+	UFUNCTION(BlueprintCallable)
+	int64 GetPoints();
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetLifes();
+
+protected:
+
+	// Player destruction
+	UFUNCTION(BlueprintCallable)
+	void DestroyPlayer();
+
+	// Event handler that will run after player has been destroyed
+	UFUNCTION(BlueprintCallable)
+	void PostPlayerDestroyed();
+
+private:
+
+	FTimerHandle timerHandle;
+
+	UPROPERTY()
+	class ASIGameModeBase* MyGameMode;
+
+	// Points
+	int64 playerPoints;
+
+	// Lifes
+	int32 playerLifes;
+
+	// Bindings to delegates
+	void InvaderDestroyed(int32 id);
+	void SquadDissolved(int32 val);
+	void SquadSuccessful();
+
 };
