@@ -5,6 +5,11 @@
 
 #include "SIGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/StaticMeshComponent.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
+#include "Bullet.h"
 
 // Sets default values
 ASIPawn::ASIPawn()
@@ -23,11 +28,34 @@ ASIPawn::ASIPawn()
  	// Set this pawn to call Tick() every frame. You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// SetStaticMesh(); // Default mesh (SetStaticMesh with no arguments)
+	SetStaticMesh(); // Default mesh (SetStaticMesh with no arguments)
 
 	// Initialize audio component that will be added to current actor and follow them around
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio");
 	AudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+
+}
+
+// Set a static mesh
+void ASIPawn::SetStaticMesh(UStaticMesh* staticMesh, FString path, FVector scale) {
+	UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
+	const TCHAR* tpath;
+	tpath = ASIPawn::defaultStaticMeshPath; // default route
+
+	if (!Mesh) // No Mesh component
+		return;
+
+	if (!staticMesh) {
+		if (!path.IsEmpty())
+			tpath = *path;
+		auto MeshAsset = ConstructorHelpers::FObjectFinder<UStaticMesh>(tpath);
+		staticMesh = MeshAsset.Object;
+	}
+
+	if (staticMesh) {
+		Mesh->SetStaticMesh(staticMesh);
+		Mesh->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
+	}
 
 }
 
@@ -50,16 +78,13 @@ void ASIPawn::BeginPlay()
 
 	bulletTemplate->bulletType = BulletType::PLAYER;
 
-	// Assign sound that will be played on shoot
-	if (AudioComponent != nullptr && AudioShoot != nullptr) {
-		AudioComponent->SetSound(AudioShoot);
-	}
-
-	// Subscribe to events
+	// "GetWorld" will give us a reference to the level itself, so we can use it to fetch the game mode
 	UWorld* TheWorld = GetWorld();
 	if (TheWorld != nullptr) {
 		AGameModeBase* GameMode = UGameplayStatics::GetGameMode(TheWorld);
 		MyGameMode = Cast<ASIGameModeBase>(GameMode);
+
+		// Subscribe to events
 		if (MyGameMode) {
 			MyGameMode->InvaderDestroyed.AddUObject(this, &ASIPawn::InvaderDestroyed);
 			MyGameMode->SquadSuccessful.BindUObject(this, &ASIPawn::SquadSuccessful);
@@ -127,6 +152,11 @@ void ASIPawn::OnFire() {
 	spawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	spawnParameters.Template = bulletTemplate;
 	spawnedBullet = Cast<ABullet>(GetWorld()->SpawnActor(bulletClass, &spawnLocation, &spawnRotation, spawnParameters));
+
+	// Assign sound that will be played on shoot
+	if (AudioComponent != nullptr && AudioShoot != nullptr) {
+		AudioComponent->SetSound(AudioShoot);
+	}
 
 	// Reproduce a sound when the user shoots
 	AudioComponent->Play();

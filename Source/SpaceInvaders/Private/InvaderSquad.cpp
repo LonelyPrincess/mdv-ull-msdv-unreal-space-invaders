@@ -196,7 +196,7 @@ void AInvaderSquad::RemoveInvader(int32 ind) {
 	--this->numberOfMembers;
 	if (this->numberOfMembers == 0) {
 		if (MyGameMode != nullptr) {
-			// "ExecuteIfBound" triggers the "NewSquad" event when the current squad has lost all its members
+			// "Broadcast" triggers the "NewSquad" event when the current squad has lost all its members
 			MyGameMode->NewSquad.Broadcast(1); // parameter larger than 0 to avoid finishing game!
 		}
 	}

@@ -4,11 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/DefaultPawn.h"
-#include "Components/StaticMeshComponent.h"
-#include "UObject/ConstructorHelpers.h"
-#include "Components/AudioComponent.h"
-#include "Sound/SoundCue.h"
-#include "Bullet.h"
 
 #include "SIPawn.generated.h"
 
@@ -58,6 +53,8 @@ private:
 	UPROPERTY()
 	class UAudioComponent* AudioComponent;
 
+	static constexpr const TCHAR* defaultStaticMeshPath = TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'");
+
 public:
 
 	// Sets default values for this pawn's properties
@@ -74,6 +71,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// It could be possible to change the static mesh component during run time.
+	UFUNCTION(BlueprintCallable)
+	void SetStaticMesh(class UStaticMesh* staticMesh = nullptr, FString path = TEXT(""), FVector scale = FVector(1.0f, 1.0f, 1.0f));
 
 protected:
 
@@ -112,7 +113,7 @@ public:
 
 protected:
 
-	// Player destruction
+	// Run effects involved in player destruction
 	UFUNCTION(BlueprintCallable)
 	void DestroyPlayer();
 
@@ -124,13 +125,14 @@ private:
 
 	FTimerHandle timerHandle;
 
+	// Reference to game mode instance
 	UPROPERTY()
 	class ASIGameModeBase* MyGameMode;
 
-	// Points
+	// Player score
 	int64 playerPoints;
 
-	// Lifes
+	// Remaining lives
 	int32 playerLifes;
 
 	// Bindings to delegates
