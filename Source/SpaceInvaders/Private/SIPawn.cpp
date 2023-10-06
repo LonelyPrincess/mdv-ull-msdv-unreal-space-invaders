@@ -267,6 +267,11 @@ void ASIPawn::PostPlayerDestroyed() {
 
 }
 
+// TODO: There seems to be a bug here! Points are increasing when the invader self-destroys
+// We should only add up to the score when the player killed it, it's weird for it to happen otherwise
+// This can probably be fixed by adding some parameter to this event, to indicate the cause of destruction
+// Either that, or have separate events for both cases (invader killed by user, invader destroyed for other reasons)
+
 // Delegate responses:
 void ASIPawn::InvaderDestroyed(int32 id) {
 	this->playerPoints += this->pointsPerInvader;
