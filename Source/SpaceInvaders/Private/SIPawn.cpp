@@ -274,6 +274,8 @@ void ASIPawn::InvaderDestroyed(int32 id) {
 
 void ASIPawn::SquadSuccessful() {
 	DestroyPlayer();
+
+	// Regenerate a new squad after the previous one has successfully reached the player
 	if (MyGameMode)
 		MyGameMode->NewSquad.Broadcast(this->playerLifes);
 }
