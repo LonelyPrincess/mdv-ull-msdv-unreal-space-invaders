@@ -68,4 +68,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnNewSquad(int32 lifes);
 
+	void EndGame();
+
+	UFUNCTION(BlueprintCallable)
+	void OnPlayerZeroLifes();
+
 };

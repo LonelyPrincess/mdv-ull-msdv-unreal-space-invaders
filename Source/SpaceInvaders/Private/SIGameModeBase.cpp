@@ -24,6 +24,7 @@ void ASIGameModeBase::BeginPlay() {
 
 	// Subscribe to event and select function to be called on event trigger
 	this->NewSquad.AddUObject(this, &ASIGameModeBase::OnNewSquad);
+	this->PlayerZeroLifes.BindUObject(this, &ASIGameModeBase::OnPlayerZeroLifes);
 
 	// Spawn a squad of invaders
 	RegenerateSquad();
@@ -49,4 +50,21 @@ void ASIGameModeBase::RegenerateSquad() {
 void ASIGameModeBase::OnNewSquad(int32 lifes) {
 	// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Generating new squad...")));
 	RegenerateSquad();
+}
+
+// Method that will show message when game is over
+void ASIGameModeBase::EndGame() {
+	// Destroy squad still alive before ending the game
+	if (this->spawnedInvaderSquad != nullptr) {
+		this->spawnedInvaderSquad->Destroy();
+	}
+
+	// Close game level and show main menu instead
+	// UGameplayStatics::OpenLeve(this, FName("Menu"));
+	UE_LOG(LogTemp, Display, TEXT("Should exit game now!"));
+}
+
+// Handler for event of user losing all their lives
+void ASIGameModeBase::OnPlayerZeroLifes() {
+	EndGame();
 }
