@@ -132,12 +132,15 @@ private:
 	// Player score
 	int64 playerPoints;
 
-	// Remaining lives
-	int32 playerLifes;
-
 	// Bindings to delegates
 	void InvaderDestroyed(int32 id);
 	void SquadDissolved(int32 val);
 	void SquadSuccessful();
+
+public:
+
+	// Remaining lives
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender config")
+	int32 playerLifes;
 
 };
