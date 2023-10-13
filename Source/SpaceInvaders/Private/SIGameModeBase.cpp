@@ -61,7 +61,7 @@ void ASIGameModeBase::EndGame() {
 
 	// Close game level and show main menu instead
 	UE_LOG(LogTemp, Display, TEXT("Should exit game now!"));
-	// UGameplayStatics::OpenLeve(this, FName("Menu"));
+	UGameplayStatics::OpenLevel(this, FName("Menu"));
 }
 
 // Handler for event of user losing all their lives
