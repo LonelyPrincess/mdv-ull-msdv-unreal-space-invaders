@@ -4,6 +4,8 @@
 #include "InvaderSquad.h"
 #include "SIGameModeBase.h"
 
+#include "Math/UnrealMathUtility.h"
+
 // Sets default values
 // Order in which params show up in initialization list must match the order in which props were defined in the defintion file (".h")
 AInvaderSquad::AInvaderSquad()
@@ -23,6 +25,37 @@ AInvaderSquad::AInvaderSquad()
 	Root = CreateDefaultSubobject<USceneComponent>("Root");
 	RootComponent = Root; // We need a RootComponent to have a base transform
 
+}
+
+// TODO: method to create a template
+class AInvader* AInvaderSquad::FetchInvaderTemplate() {
+	// class AInvader invaderClass
+	class AInvader* invaderTemplate;
+
+	if (invaderClass != nullptr && invaderClass->IsChildOf<AInvader>())
+		invaderTemplate = NewObject<AInvader>(this, invaderClass->GetFName(), RF_NoFlags, invaderClass.GetDefaultObject());
+	else {
+		invaderClass = AInvader::StaticClass();
+		invaderTemplate = NewObject<AInvader>();
+	}
+
+	// TODO: algorythm to randomly pick up an invader type
+	TArray<int> oddsArray;
+	UE_LOG(LogTemp, Warning, TEXT("invader classes has %i elements"), invaderClasses.Num());
+	for (int i = 0; i < invaderClasses.Num(); i++) {
+		FInvaderClassStruct invaderType = invaderClasses[i];
+		UE_LOG(LogTemp, Warning, TEXT("invader class %i should be repeated %i times"), i, invaderType.spawnOdds);
+		for (int reps = 0; reps < invaderType.spawnOdds; reps++) {
+			oddsArray.Add(i);
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("random array has %i elements"), oddsArray.Num());
+
+	int32 selectedIndex = FMath::RandRange(0, oddsArray.Num() - 1);
+	UE_LOG(LogTemp, Warning, TEXT("randomly chosen %i"), selectedIndex);
+
+	return invaderTemplate;
 }
 
 // Called when the game starts or when spawned
@@ -49,27 +82,7 @@ void AInvaderSquad::BeginPlay()
 	}
 
 	// Set Invader Template with default value for invaderClass
-	if (invaderClass != nullptr && invaderClass->IsChildOf<AInvader>())
-		invaderTemplate = NewObject<AInvader>(this, invaderClass->GetFName(), RF_NoFlags, invaderClass.GetDefaultObject());
-	else {
-		invaderClass = AInvader::StaticClass();
-		invaderTemplate = NewObject<AInvader>();
-	}
-
-	// public static void Fill<T> (T[] array, T value, int startIndex, int count);
-	// UE_LOG(LogTemp, Warning, TEXT("%s"), *message);
-	TArray<int> oddsArray;
-	UE_LOG(LogTemp, Warning, TEXT("invader classes has %i elements"), invaderClasses.Num());
-	for (int i = 0; i < invaderClasses.Num(); i++) {
-		FInvaderClassStruct invaderType = invaderClasses[i];
-		UE_LOG(LogTemp, Warning, TEXT("invader class %i should be repeated %i times"), i, invaderType.spawnOdds);
-		for (int reps = 0; reps < invaderType.spawnOdds; reps++) {
-			oddsArray.Add(i);
-		}
-	}
-
-	UE_LOG(LogTemp, Warning, TEXT("random array has %i elements"), oddsArray.Num());
-
+	class AInvader* invaderTemplate = FetchInvaderTemplate();
 
 	// Spawn Invaders
 	FVector actorLocation = GetActorLocation();

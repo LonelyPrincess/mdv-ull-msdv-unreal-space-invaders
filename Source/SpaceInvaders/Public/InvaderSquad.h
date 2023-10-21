@@ -103,8 +103,7 @@ private:
 
 	int32 numberOfMembers;
 
-	UPROPERTY()
-	class AInvader* invaderTemplate;
+	class AInvader* FetchInvaderTemplate();
 
 	// Variable where we'll store how much time has passed since an invader entered free jump mode
 	float timeFromLastFreeJump;
