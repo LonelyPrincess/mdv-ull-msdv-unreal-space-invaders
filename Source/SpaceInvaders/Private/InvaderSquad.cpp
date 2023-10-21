@@ -56,6 +56,21 @@ void AInvaderSquad::BeginPlay()
 		invaderTemplate = NewObject<AInvader>();
 	}
 
+	// public static void Fill<T> (T[] array, T value, int startIndex, int count);
+	// UE_LOG(LogTemp, Warning, TEXT("%s"), *message);
+	TArray<int> oddsArray;
+	UE_LOG(LogTemp, Warning, TEXT("invader classes has %i elements"), invaderClasses.Num());
+	for (int i = 0; i < invaderClasses.Num(); i++) {
+		FInvaderClassStruct invaderType = invaderClasses[i];
+		UE_LOG(LogTemp, Warning, TEXT("invader class %i should be repeated %i times"), i, invaderType.spawnOdds);
+		for (int reps = 0; reps < invaderType.spawnOdds; reps++) {
+			oddsArray.Add(i);
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("random array has %i elements"), oddsArray.Num());
+
+
 	// Spawn Invaders
 	FVector actorLocation = GetActorLocation();
 	FVector spawnLocation = actorLocation;

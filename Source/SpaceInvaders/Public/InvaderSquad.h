@@ -13,6 +13,20 @@
 // Forward declaration of this enum, when using "class" here we're telling the compiler this is defined elsewhere (the invader class, in this case)
 enum class InvaderMovementType : uint8;
 
+// Struct to define an invader class and how likely it'd be for it to spawn
+USTRUCT(BlueprintType)
+struct FInvaderClassStruct {
+	GENERATED_BODY()
+
+	// Class that will be used to spawn invaders in the squad
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Invader type")
+	TSubclassOf<class AInvader> invaderClass;
+
+	// The larger this number, the larger the odds for this particular class to be spawned when creating a squad
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Invader type")
+	int32 spawnOdds;
+};
+
 UCLASS()
 class SPACEINVADERS_API AInvaderSquad : public AActor
 {
@@ -58,6 +72,10 @@ protected:
 	// Class that will be used to instantiate the squad members
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
 	TSubclassOf<class AInvader> invaderClass;
+
+	// Classes that will be used to instantiate the squad members
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
+	TArray<FInvaderClassStruct> invaderClasses;
 
 	// Number of rows in squad
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
