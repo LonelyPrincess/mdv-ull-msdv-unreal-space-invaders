@@ -27,6 +27,7 @@ AInvaderSquad::AInvaderSquad()
 
 }
 
+// TODO: maybe we can avoid creating an extra array for this?
 void AInvaderSquad::InitInvaderTypesOddsArray() {
 	UE_LOG(LogTemp, Warning, TEXT("invader classes has %i elements"), invaderClasses.Num());
 
@@ -41,7 +42,8 @@ void AInvaderSquad::InitInvaderTypesOddsArray() {
 	UE_LOG(LogTemp, Warning, TEXT("random array has %i elements"), oddsArray.Num());
 }
 
-// TODO: method to create a template
+// TODO: Store templates in an array so we don't have to redefine them?
+// Generate an instance for a random invasor class
 class AInvader* AInvaderSquad::FetchInvaderTemplate() {
 	class AInvader* invaderTemplate;
 	TSubclassOf<class AInvader> invaderClass;
@@ -53,10 +55,10 @@ class AInvader* AInvaderSquad::FetchInvaderTemplate() {
 		}
 	}
 
+	// If it was not possible to fetch a valid invader type, we apply the base "AInvader" class by default
 	if (invaderClass != nullptr && invaderClass->IsChildOf<AInvader>())
 		invaderTemplate = NewObject<AInvader>(this, invaderClass->GetFName(), RF_NoFlags, invaderClass.GetDefaultObject());
 	else {
-		invaderClass = AInvader::StaticClass();
 		invaderTemplate = NewObject<AInvader>();
 	}
 
