@@ -27,42 +27,48 @@ AInvaderSquad::AInvaderSquad()
 
 }
 
-// TODO: maybe we can avoid creating an extra array for this?
-void AInvaderSquad::InitInvaderTypesOddsArray() {
-	UE_LOG(LogTemp, Warning, TEXT("invader classes has %i elements"), invaderClasses.Num());
+// Generate reusable templates for the different invader types
+void AInvaderSquad::InitializeInvaderTemplates() {
+
+	class AInvader* defaultTemplate = NewObject<AInvader>();
+
+	if (invaderClasses.Num() == 0) {
+		UE_LOG(LogTemp, Warning, TEXT("No invader classes were specified, so default template will be applied..."));
+		invaderTemplates.Add(defaultTemplate);
+		return;
+	}
 
 	for (int i = 0; i < invaderClasses.Num(); i++) {
 		FInvaderClassStruct invaderType = invaderClasses[i];
-		UE_LOG(LogTemp, Warning, TEXT("invader class %i should be repeated %i times"), i, invaderType.spawnOdds);
+
+		// Generate template for each of the selected classes for later reuse
+		TSubclassOf<class AInvader> invaderClass = invaderType.invaderClass;
+		if (invaderClass != nullptr && invaderClass->IsChildOf<AInvader>()) {
+			class AInvader* customTemplate = NewObject<AInvader>(this, invaderClass->GetFName(), RF_NoFlags, invaderClass.GetDefaultObject());
+			invaderTemplates.Add(customTemplate);
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("Invader class in index %i is not valid, so it'd be replaced by default template..."), i);
+			invaderTemplates.Add(defaultTemplate);
+		}
+
+		// Update odds array for algorythm to randomly pick an invader type based on the assigned weights
+		UE_LOG(LogTemp, Display, TEXT("Invader class in index %i is repeated %i times in odds array"), i, invaderType.spawnOdds);
 		for (int reps = 0; reps < invaderType.spawnOdds; reps++) {
 			oddsArray.Add(i);
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("random array has %i elements"), oddsArray.Num());
 }
 
-// TODO: Store templates in an array so we don't have to redefine them?
-// Generate an instance for a random invasor class
-class AInvader* AInvaderSquad::FetchInvaderTemplate() {
-	class AInvader* invaderTemplate;
-	TSubclassOf<class AInvader> invaderClass;
-	
-	if (oddsArray.Num() > 0) {
-		int32 selectedIndex = oddsArray[FMath::RandRange(0, oddsArray.Num() - 1)];
-		if (invaderClasses.IsValidIndex(selectedIndex)) {
-			invaderClass = invaderClasses[selectedIndex].invaderClass;
-		}
-	}
+// Return a random template that will be used to generate an invader instance
+class AInvader* AInvaderSquad::FetchRandomInvaderTemplate() {
 
-	// If it was not possible to fetch a valid invader type, we apply the base "AInvader" class by default
-	if (invaderClass != nullptr && invaderClass->IsChildOf<AInvader>())
-		invaderTemplate = NewObject<AInvader>(this, invaderClass->GetFName(), RF_NoFlags, invaderClass.GetDefaultObject());
-	else {
-		invaderTemplate = NewObject<AInvader>();
-	}
+	int32 selectedIndex = oddsArray.Num() > 0
+		? oddsArray[FMath::RandRange(0, oddsArray.Num() - 1)]
+		: 0;
 
-	return invaderTemplate;
+	return invaderTemplates[selectedIndex];
 }
 
 // Called when the game starts or when spawned
@@ -88,8 +94,8 @@ void AInvaderSquad::BeginPlay()
 		}
 	}
 
-	// Set Invader Template with default value for invaderClass
-	InitInvaderTypesOddsArray();
+	// Generate templates for the specified invader types
+	InitializeInvaderTemplates();
 
 	// Spawn Invaders
 	FVector actorLocation = GetActorLocation();
@@ -107,7 +113,7 @@ void AInvaderSquad::BeginPlay()
 		for (int j = 0; j < this->nRows; j++)
 		{
 			spawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			spawnParameters.Template = FetchInvaderTemplate();
+			spawnParameters.Template = FetchRandomInvaderTemplate();
 			spawnedInvader = GetWorld()->SpawnActor<AInvader>(spawnLocation, spawnRotation, spawnParameters);
 			spawnedInvader->SetPositionInSquad(count);
 			++count;
