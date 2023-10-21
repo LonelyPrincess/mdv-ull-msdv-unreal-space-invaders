@@ -186,14 +186,14 @@ void UInvaderMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 			// If invader was not descending yet, set progress counter to initialize descending movement
 			if (previousState != InvaderMovementType::DOWN) {
 				descendingProgress = 0.0f; // This means that the down phase is starting
-
-				// Trigger event to indicate squad has gone down as much as possible
-				MyGameMode->SquadFinishesDown.ExecuteIfBound();
 			}
 
 			// If descending progress exceeds the distance we configured in step param, we must stop invader from going down anymore
 			if (descendingProgress > descendingStep) {
 				deltaVertical = 0.0f; // This means that the down phase stops
+
+				// Trigger event to indicate squad has gone down as much as possible
+				MyGameMode->SquadFinishesDown.ExecuteIfBound();
 			}
 
 			deltaX = -deltaVertical;
