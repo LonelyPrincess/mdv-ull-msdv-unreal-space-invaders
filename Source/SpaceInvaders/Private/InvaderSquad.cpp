@@ -27,21 +27,9 @@ AInvaderSquad::AInvaderSquad()
 
 }
 
-// TODO: method to create a template
-class AInvader* AInvaderSquad::FetchInvaderTemplate() {
-	// class AInvader invaderClass
-	class AInvader* invaderTemplate;
-
-	if (invaderClass != nullptr && invaderClass->IsChildOf<AInvader>())
-		invaderTemplate = NewObject<AInvader>(this, invaderClass->GetFName(), RF_NoFlags, invaderClass.GetDefaultObject());
-	else {
-		invaderClass = AInvader::StaticClass();
-		invaderTemplate = NewObject<AInvader>();
-	}
-
-	// TODO: algorythm to randomly pick up an invader type
-	TArray<int> oddsArray;
+void AInvaderSquad::InitInvaderTypesOddsArray() {
 	UE_LOG(LogTemp, Warning, TEXT("invader classes has %i elements"), invaderClasses.Num());
+
 	for (int i = 0; i < invaderClasses.Num(); i++) {
 		FInvaderClassStruct invaderType = invaderClasses[i];
 		UE_LOG(LogTemp, Warning, TEXT("invader class %i should be repeated %i times"), i, invaderType.spawnOdds);
@@ -51,9 +39,26 @@ class AInvader* AInvaderSquad::FetchInvaderTemplate() {
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("random array has %i elements"), oddsArray.Num());
+}
 
-	int32 selectedIndex = FMath::RandRange(0, oddsArray.Num() - 1);
-	UE_LOG(LogTemp, Warning, TEXT("randomly chosen %i"), selectedIndex);
+// TODO: method to create a template
+class AInvader* AInvaderSquad::FetchInvaderTemplate() {
+	class AInvader* invaderTemplate;
+	TSubclassOf<class AInvader> invaderClass;
+	
+	if (oddsArray.Num() > 0) {
+		int32 selectedIndex = oddsArray[FMath::RandRange(0, oddsArray.Num() - 1)];
+		if (invaderClasses.IsValidIndex(selectedIndex)) {
+			invaderClass = invaderClasses[selectedIndex].invaderClass;
+		}
+	}
+
+	if (invaderClass != nullptr && invaderClass->IsChildOf<AInvader>())
+		invaderTemplate = NewObject<AInvader>(this, invaderClass->GetFName(), RF_NoFlags, invaderClass.GetDefaultObject());
+	else {
+		invaderClass = AInvader::StaticClass();
+		invaderTemplate = NewObject<AInvader>();
+	}
 
 	return invaderTemplate;
 }
@@ -82,7 +87,7 @@ void AInvaderSquad::BeginPlay()
 	}
 
 	// Set Invader Template with default value for invaderClass
-	class AInvader* invaderTemplate = FetchInvaderTemplate();
+	InitInvaderTypesOddsArray();
 
 	// Spawn Invaders
 	FVector actorLocation = GetActorLocation();
@@ -100,7 +105,7 @@ void AInvaderSquad::BeginPlay()
 		for (int j = 0; j < this->nRows; j++)
 		{
 			spawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			spawnParameters.Template = invaderTemplate;
+			spawnParameters.Template = FetchInvaderTemplate();
 			spawnedInvader = GetWorld()->SpawnActor<AInvader>(spawnLocation, spawnRotation, spawnParameters);
 			spawnedInvader->SetPositionInSquad(count);
 			++count;

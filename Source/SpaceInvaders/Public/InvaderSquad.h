@@ -70,8 +70,8 @@ public:
 protected:
 
 	// Class that will be used to instantiate the squad members
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
-	TSubclassOf<class AInvader> invaderClass;
+	// UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
+	// TSubclassOf<class AInvader> invaderClass;
 
 	// Classes that will be used to instantiate the squad members
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
@@ -103,6 +103,8 @@ private:
 
 	int32 numberOfMembers;
 
+	TArray<int32> oddsArray;
+	void InitInvaderTypesOddsArray();
 	class AInvader* FetchInvaderTemplate();
 
 	// Variable where we'll store how much time has passed since an invader entered free jump mode
