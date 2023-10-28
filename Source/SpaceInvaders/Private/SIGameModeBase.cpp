@@ -3,6 +3,8 @@
 
 #include "SIGameModeBase.h"
 
+#include "Kismet/GameplayStatics.h"
+
 // Constructor for GameMode class, which overrides default classes for pawn and player controller
 ASIGameModeBase::ASIGameModeBase()
 	: spawnLocation{ }
@@ -14,6 +16,8 @@ ASIGameModeBase::ASIGameModeBase()
 	PlayerControllerClass = ASIPlayerController::StaticClass();
 	InvaderSquadClass = AInvaderSquad::StaticClass();
 
+	// Initialize instance of save game object to persist game data
+	// SaveGameInstance = Cast<USISaveGame>(UGameplayStatics::CreateSaveGameObject(USISaveGame::StaticClass()));
 }
 
 
@@ -60,6 +64,24 @@ void ASIGameModeBase::EndGame(int64 playerScore) {
 	}
 
 	// TODO: Save score here if it's higher than current record
+	/*if (SaveGameInstance != nullptr)
+	{
+		// Set data on the savegame object.
+		SaveGameInstance->highestScore = playerScore;
+
+		// Save the data immediately.
+		if (UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Game saved!"));
+		}
+	}*/
+
+	/*if (USISaveGame* LoadedGame = Cast<USISaveGame>(UGameplayStatics::LoadGameFromSlot(SaveGameInstance->SaveSlotName, 0)))
+	{
+		if (LoadedGame != nullptr)
+		// The operation was successful, so LoadedGame now contains the data we saved earlier.
+		UE_LOG(LogTemp, Warning, TEXT("LOADED: %s"), *LoadedGame->highestScore);
+	}*/
 
 	// Close game level and show main menu instead
 	UE_LOG(LogTemp, Display, TEXT("Should exit game now!"));
