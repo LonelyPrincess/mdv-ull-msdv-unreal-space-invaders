@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 
 #include "SIPawn.h"
+#include "SISaveGame.h"
 #include "SIPlayerController.h"
 #include "InvaderSquad.h"
 
@@ -41,6 +42,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void RegenerateSquad();
+
+	// Save game instance
+	USISaveGame* SaveGameInstance;
 
 protected:
 

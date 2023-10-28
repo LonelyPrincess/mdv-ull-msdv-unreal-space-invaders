@@ -3,7 +3,7 @@
 
 #include "SIGameModeBase.h"
 
-#include "Kismet/GameplayStatics.h"
+#include "SIGameInstance.h"
 
 // Constructor for GameMode class, which overrides default classes for pawn and player controller
 ASIGameModeBase::ASIGameModeBase()
@@ -32,6 +32,10 @@ void ASIGameModeBase::BeginPlay() {
 
 	// Spawn a squad of invaders
 	RegenerateSquad();
+
+	//
+	USIGameInstance* gameInstance = Cast<USIGameInstance>(this->GetGameInstance());
+	gameInstance->LoadGameData();
 
 }
 
