@@ -70,7 +70,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnNewSquad(int32 lifes);
 
-	void EndGame(int64 playerScore);
+	void EndGame();
 
 	UFUNCTION(BlueprintCallable)
 	void OnPlayerZeroLifes(int64 playerScore);

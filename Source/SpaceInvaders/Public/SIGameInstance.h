@@ -22,7 +22,7 @@ private:
 
 	class USISaveGame* SavedGameData;
 
-public: 
+public:
 
 	USIGameInstance();
 

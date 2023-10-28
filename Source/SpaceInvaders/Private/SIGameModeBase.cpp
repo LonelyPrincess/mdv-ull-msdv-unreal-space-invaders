@@ -61,17 +61,10 @@ void ASIGameModeBase::OnNewSquad(int32 lifes) {
 }
 
 // Method that will show message when game is over
-void ASIGameModeBase::EndGame(int64 playerScore) {
+void ASIGameModeBase::EndGame() {
 	// Destroy squad still alive before ending the game
 	if (this->spawnedInvaderSquad != nullptr) {
 		this->spawnedInvaderSquad->Destroy();
-	}
-
-	// Update highest score if current score exceeds previous record
-	USIGameInstance* gameInstance = Cast<USIGameInstance>(this->GetGameInstance());
-	if (playerScore > gameInstance->GetCurrentHighestScore()) {
-		UE_LOG(LogTemp, Warning, TEXT("New highest score is %i"), playerScore);
-		gameInstance->SaveHighestScore(playerScore);
 	}
 
 	// Close game level and show main menu instead
@@ -81,6 +74,20 @@ void ASIGameModeBase::EndGame(int64 playerScore) {
 
 // Handler for event of user losing all their lives
 void ASIGameModeBase::OnPlayerZeroLifes(int64 playerScore) {
-	UE_LOG(LogTemp, Display, TEXT("Player died with a score of %i"), playerScore);
-	EndGame(playerScore);
+	UE_LOG(LogTemp, Warning, TEXT("Player died with a score of %i"), playerScore);
+
+	// Update highest score if current score exceeds previous record
+	USIGameInstance* gameInstance = Cast<USIGameInstance>(this->GetGameInstance());
+	int64 currentHighestScore = gameInstance->GetCurrentHighestScore();
+	UE_LOG(LogTemp, Warning, TEXT("Current highest score is %i"), currentHighestScore);
+	if (playerScore > currentHighestScore) {
+		UE_LOG(LogTemp, Warning, TEXT("New highest score is %i"), playerScore);
+		gameInstance->SaveHighestScore(playerScore);
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("%i > %i = false"), playerScore, currentHighestScore);
+	}
+	gameInstance->SaveHighestScore(playerScore);
+
+	EndGame();
 }
