@@ -26,7 +26,7 @@ public:
 
 	USIGameInstance();
 
-	class USISaveGame* LoadGameData();
+	int64 GetCurrentHighestScore();
 	void SaveHighestScore(int64 highestPlayerScore);
 
 };

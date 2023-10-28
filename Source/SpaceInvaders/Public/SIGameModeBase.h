@@ -43,9 +43,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RegenerateSquad();
 
-	// Save game instance
-	USISaveGame* SaveGameInstance;
-
 protected:
 
 	virtual void BeginPlay() override;

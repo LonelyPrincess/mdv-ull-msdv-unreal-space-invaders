@@ -33,9 +33,9 @@ void ASIGameModeBase::BeginPlay() {
 	// Spawn a squad of invaders
 	RegenerateSquad();
 
-	//
+	// Read score before begin playing
 	USIGameInstance* gameInstance = Cast<USIGameInstance>(this->GetGameInstance());
-	gameInstance->LoadGameData();
+	UE_LOG(LogTemp, Warning, TEXT("Stored score: %i"), gameInstance->GetCurrentHighestScore());
 
 }
 
@@ -67,25 +67,12 @@ void ASIGameModeBase::EndGame(int64 playerScore) {
 		this->spawnedInvaderSquad->Destroy();
 	}
 
-	// TODO: Save score here if it's higher than current record
-	/*if (SaveGameInstance != nullptr)
-	{
-		// Set data on the savegame object.
-		SaveGameInstance->highestScore = playerScore;
-
-		// Save the data immediately.
-		if (UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Game saved!"));
-		}
-	}*/
-
-	/*if (USISaveGame* LoadedGame = Cast<USISaveGame>(UGameplayStatics::LoadGameFromSlot(SaveGameInstance->SaveSlotName, 0)))
-	{
-		if (LoadedGame != nullptr)
-		// The operation was successful, so LoadedGame now contains the data we saved earlier.
-		UE_LOG(LogTemp, Warning, TEXT("LOADED: %s"), *LoadedGame->highestScore);
-	}*/
+	// Update highest score if current score exceeds previous record
+	USIGameInstance* gameInstance = Cast<USIGameInstance>(this->GetGameInstance());
+	if (playerScore > gameInstance->GetCurrentHighestScore()) {
+		UE_LOG(LogTemp, Warning, TEXT("New highest score is %i"), playerScore);
+		gameInstance->SaveHighestScore(playerScore);
+	}
 
 	// Close game level and show main menu instead
 	UE_LOG(LogTemp, Display, TEXT("Should exit game now!"));

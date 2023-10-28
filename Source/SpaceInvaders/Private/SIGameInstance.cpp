@@ -20,9 +20,13 @@ USIGameInstance::USIGameInstance()
 
 		UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, 0);
 	}
+	else 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Previous save data loaded"));
+	}
 }
 
-USISaveGame* USIGameInstance::LoadGameData()
+/*USISaveGame* USIGameInstance::LoadGameData()
 {
 	if (SavedGameData) {
 		UE_LOG(LogTemp, Warning, TEXT("Stored score: %i"), SavedGameData->HighestScore);
@@ -30,6 +34,15 @@ USISaveGame* USIGameInstance::LoadGameData()
 	}
 	else
 		return nullptr;
+}*/
+
+int64 USIGameInstance::GetCurrentHighestScore() 
+{
+	if (SavedGameData) {
+		return SavedGameData->HighestScore;
+	}
+
+	return 0;
 }
 
 void USIGameInstance::SaveHighestScore(int64 highestPlayerScore) 
@@ -37,9 +50,9 @@ void USIGameInstance::SaveHighestScore(int64 highestPlayerScore)
 	if (SavedGameData)
 	{
 		SavedGameData->HighestScore = highestPlayerScore;
-		bool isGameSaved = UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, 0);
-		if (isGameSaved) {
+		UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, 0);
+		/*if (isGameSaved) {
 			UE_LOG(LogTemp, Warning, TEXT("New highest score was successfully saved!"));
-		}
+		}*/
 	}
 }
