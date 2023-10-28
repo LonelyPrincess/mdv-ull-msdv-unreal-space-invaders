@@ -25,7 +25,7 @@ USIGameInstance::USIGameInstance()
 USISaveGame* USIGameInstance::LoadGameData()
 {
 	if (SavedGameData) {
-		UE_LOG(LogTemp, Warning, TEXT("Stored score: %i"), *SavedGameData->HighestScore);
+		UE_LOG(LogTemp, Warning, TEXT("Stored score: %i"), SavedGameData->HighestScore);
 		return SavedGameData;
 	}
 	else
