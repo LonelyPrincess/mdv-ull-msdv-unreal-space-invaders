@@ -53,11 +53,13 @@ void ASIGameModeBase::OnNewSquad(int32 lifes) {
 }
 
 // Method that will show message when game is over
-void ASIGameModeBase::EndGame() {
+void ASIGameModeBase::EndGame(int64 playerScore) {
 	// Destroy squad still alive before ending the game
 	if (this->spawnedInvaderSquad != nullptr) {
 		this->spawnedInvaderSquad->Destroy();
 	}
+
+	// TODO: Save score here if it's higher than current record
 
 	// Close game level and show main menu instead
 	UE_LOG(LogTemp, Display, TEXT("Should exit game now!"));
@@ -65,6 +67,7 @@ void ASIGameModeBase::EndGame() {
 }
 
 // Handler for event of user losing all their lives
-void ASIGameModeBase::OnPlayerZeroLifes() {
-	EndGame();
+void ASIGameModeBase::OnPlayerZeroLifes(int64 playerScore) {
+	UE_LOG(LogTemp, Display, TEXT("Player died with a score of %i"), playerScore);
+	EndGame(playerScore);
 }

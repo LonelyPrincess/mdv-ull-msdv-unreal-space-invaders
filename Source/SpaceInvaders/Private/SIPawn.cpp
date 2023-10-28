@@ -250,7 +250,7 @@ void ASIPawn::PostPlayerDestroyed() {
 	if (this->playerLifes == 0) {
 		UE_LOG(LogTemp, Display, TEXT("Player is dead"));
 		if (MyGameMode)
-			MyGameMode->PlayerZeroLifes.ExecuteIfBound();
+			MyGameMode->PlayerZeroLifes.ExecuteIfBound(this->playerPoints);
 		return;
 	}
 

@@ -13,8 +13,9 @@
 
 // Delegates of this game:
 DECLARE_DELEGATE(FStandardDelegateSignature)
-DECLARE_MULTICAST_DELEGATE_OneParam(FOneParamMulticastDelegateSignature, int32);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOneParamMulticastDelegateSignature, int32)
 DECLARE_DELEGATE_OneParam(FOneParamDelegateSignature, int32)
+DECLARE_DELEGATE_OneParam(FOneLongIntParamDelegateSignature, int64)
 
 /**
  * 
@@ -60,7 +61,7 @@ public:
 	FOneParamMulticastDelegateSignature InvaderDestroyed;	// Invader -> Squad, Player
 
 	FOneParamMulticastDelegateSignature NewSquad;			// Squad -> Game Mode 
-	FStandardDelegateSignature PlayerZeroLifes;				// Player -> Game Mode
+	FOneLongIntParamDelegateSignature PlayerZeroLifes;		// Player -> Game Mode
 
 protected:
 
@@ -68,9 +69,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnNewSquad(int32 lifes);
 
-	void EndGame();
+	void EndGame(int64 playerScore);
 
 	UFUNCTION(BlueprintCallable)
-	void OnPlayerZeroLifes();
+	void OnPlayerZeroLifes(int64 playerScore);
 
 };
