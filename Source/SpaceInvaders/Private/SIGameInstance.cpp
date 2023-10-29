@@ -26,15 +26,6 @@ USIGameInstance::USIGameInstance()
 	}
 }
 
-USISaveGame* USIGameInstance::LoadGameData()
-{
-	if (SavedGameData) {
-		return SavedGameData;
-	}
-	else
-		return nullptr;
-}
-
 int64 USIGameInstance::GetCurrentHighestScore() 
 {
 	if (SavedGameData) {
@@ -50,46 +41,7 @@ void USIGameInstance::UpdateHighestScore(int64 highestPlayerScore)
 		SavedGameData->HighestScore = highestPlayerScore;
 		if (UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, 0))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Saved highest score is now %i"), highestPlayerScore);
+			UE_LOG(LogTemp, Warning, TEXT("Highest score is now %i"), highestPlayerScore);
 		}
 	}
-
-	/*if (SavedGameData)
-	{
-		// Set up the (optional) delegate.
-		FAsyncSaveGameToSlotDelegate SavedDelegate;
-		// USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
-		// SavedDelegate.BindUObject(SomeUObjectPointer, &USomeUObjectClass::SaveGameDelegateFunction);
-
-		// Set data on the savegame object.
-		SavedGameData->HighestScore = highestPlayerScore;
-
-		// Start async save process.
-		UGameplayStatics::AsyncSaveGameToSlot(SavedGameData, SaveSlot, UserIndex, SavedDelegate);
-	}*/
-
-	/*if (SavedGameData)
-	{
-		SavedGameData->HighestScore = highestPlayerScore;
-		UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, 0);
-		if (isGameSaved) {
-			UE_LOG(LogTemp, Warning, TEXT("New highest score was successfully saved!"));
-		}
-
-
-		SavedGameData->HighestScore = 0;
-
-		SaveGameInstance->highestScore = highestPlayerScore;
-		if (UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, 0))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Game saved!"));
-		}
-
-		SaveGameInstance->highestScore = playerScore;
-		// Save the data immediately.
-		if (UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->UserIndex))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Game saved!"));
-		}
-	}*/
 }
