@@ -8,7 +8,7 @@ USIGameInstance::USIGameInstance()
 {
 	UE_LOG(LogTemp, Display, TEXT("Game instance created"));
 
-	SavedGameData = Cast<USISaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlot, 0));
+	SavedGameData = Cast<USISaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlot, UserIndex));
 
 	// If no previous data is found, create a new save slot
 	if (!SavedGameData)
@@ -18,7 +18,7 @@ USIGameInstance::USIGameInstance()
 
 		SavedGameData->HighestScore = 0;
 
-		UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, 0);
+		UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, UserIndex);
 	}
 	else 
 	{
@@ -39,7 +39,7 @@ void USIGameInstance::UpdateHighestScore(int64 highestPlayerScore)
 {
 	if (SavedGameData) {
 		SavedGameData->HighestScore = highestPlayerScore;
-		if (UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, 0))
+		if (UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, UserIndex))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Highest score is now %i"), highestPlayerScore);
 		}
