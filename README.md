@@ -67,6 +67,57 @@ With this particular data set it's highly likely we'll encounter the three types
 
 If we play around with the numbers and increase the odds of other types, we'll notice how it happens more often that pink invaders are completely missing from the squads.
 
+### 💾 Preserving user's highest score
+
+To make the highest score accessible from all levels in the game, a new class `SIGameInstance` was created to handle this data. The _"Project settings"_ have been modified to override the default game instance with this one, as illustrated in the screenshot below:
+
+![Configure custom `GameInstance` class](./Screenshots/game-instance-config.PNG)
+
+The `SIGameInstance` implements methods to fetch and update the highest score. Source of the data is not merely a fleeting property within the game instance itself: a `SISaveGame` inheriting from the base `SaveGame` class has also been created to make the score persist across multiple runs of the game.
+
+`SISaveGame` is a pretty simple class with no implementation: it just contains the data structure that will be stored on disk and can be read anytime when the user wishes to resume the game. In this case, all we have is a numeric value with the highest score the user has managed to achieve so far.
+
+The `SIGameInstance` will be the one in charge of loading this data and storing it into a save slot. It contains 3 methods:
+
+- Class constructor, where we'll load the data from disk when the game starts. If no previous data is found, then a new save slot is automatically created.
+- `GetHighestScore`, which retrieves the current score in the saved data object.
+- `UpdateHighestScore`, which modifies the current value of `HighestScore` and persist the changes in the save slot.
+
+Based upon these two new classes, the game code was then modified to show and update this information when needed.
+
+For the updates, changes were made into the `OnPlayerZeroLifes` method of `SIGameModeBase`. Type of this delegate method was modified so that it receives the player score at the time the pawn triggers this event.
+
+```c++
+DECLARE_DELEGATE_OneParam(FOneLongIntParamDelegateSignature, int64)
+FOneLongIntParamDelegateSignature PlayerZeroLifes;
+```
+
+In our event handler function, we then check if the obtained score exceeds the current highest score in memory. In case it beats the current record, the `UpdateHighestScore` is called to override its value with the new score before ending the game.
+
+```c++
+void ASIGameModeBase::OnPlayerZeroLifes(int64 playerScore)
+{
+    // Update highest score if current score exceeds previous record
+    USIGameInstance* gameInstance = Cast<USIGameInstance>(this->GetGameInstance());
+    int64 currentHighestScore = gameInstance->GetCurrentHighestScore();
+    if (playerScore > currentHighestScore) {
+        gameInstance->UpdateHighestScore(playerScore);
+    }
+
+    EndGame();
+}
+```
+
+Once all logic was in place, the HUD in both the main menu and the game level were modified to display the highest score. A bind function was created to bind a new text element with the actual value of the highest score in our game instance.
+
+Code for this bind function can be found in the _"Graph"_ view of the two widgets in the _"Widgets"_ folder of the project. Its implementation can be observed here:
+
+![Method to bind HUD element with highest score value](./Screenshots/bind-highest-score-in-hud.PNG)
+
+The following video illustrates the final output after the described changes. There we can observe how a _"Highest score"_ text have been added to both levels in the game, as well as how its value changes after the player has died after obtaining a score that exceeds the previous record.
+
+![Highest score update preview](./Screenshots/highest-score-update-preview.gif)
+
 ## Additional project information
 
 ### 🖥️ Project specs
@@ -81,3 +132,5 @@ If we play around with the numbers and increase the odds of other types, we'll n
 ### 🔗 References
 
 - [Space Invaders - UE5](https://github.com/iestevez/spaceinvaders_ue5)
+- [UE Docs - Saving and loading your game](https://docs.unrealengine.com/5.3/en-US/saving-and-loading-your-game-in-unreal-engine/)
+- [Awesometuts - Saving and loading game data in Unreal Engine](https://awesometuts.com/blog/save-load-game-data-unreal-engine/#elementor-toc__heading-anchor-8)
