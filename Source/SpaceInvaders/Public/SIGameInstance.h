@@ -20,13 +20,19 @@ private:
 	// Configure the user to which data will be assigned
 	uint32 UserIndex = 0;
 
+	UPROPERTY()
 	class USISaveGame* SavedGameData;
 
 public:
 
 	USIGameInstance();
 
+	UFUNCTION(BlueprintCallable)
+	USISaveGame* LoadGameData();
+
+	UFUNCTION(BlueprintCallable)
 	int64 GetCurrentHighestScore();
-	void SaveHighestScore(int64 highestPlayerScore);
+
+	void UpdateHighestScore(int64 highestPlayerScore);
 
 };

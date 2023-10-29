@@ -26,15 +26,14 @@ USIGameInstance::USIGameInstance()
 	}
 }
 
-/*USISaveGame* USIGameInstance::LoadGameData()
+USISaveGame* USIGameInstance::LoadGameData()
 {
 	if (SavedGameData) {
-		UE_LOG(LogTemp, Warning, TEXT("Stored score: %i"), SavedGameData->HighestScore);
 		return SavedGameData;
 	}
 	else
 		return nullptr;
-}*/
+}
 
 int64 USIGameInstance::GetCurrentHighestScore() 
 {
@@ -45,17 +44,17 @@ int64 USIGameInstance::GetCurrentHighestScore()
 	return 0;
 }
 
-void USIGameInstance::SaveHighestScore(int64 highestPlayerScore)
+void USIGameInstance::UpdateHighestScore(int64 highestPlayerScore)
 {
-	/*if (SavedGameData) {
+	if (SavedGameData) {
 		SavedGameData->HighestScore = highestPlayerScore;
 		if (UGameplayStatics::SaveGameToSlot(SavedGameData, SaveSlot, 0))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("New highest score %i was saved"), highestPlayerScore);
+			UE_LOG(LogTemp, Warning, TEXT("Saved highest score is now %i"), highestPlayerScore);
 		}
-	}*/
+	}
 
-	if (SavedGameData)
+	/*if (SavedGameData)
 	{
 		// Set up the (optional) delegate.
 		FAsyncSaveGameToSlotDelegate SavedDelegate;
@@ -67,7 +66,7 @@ void USIGameInstance::SaveHighestScore(int64 highestPlayerScore)
 
 		// Start async save process.
 		UGameplayStatics::AsyncSaveGameToSlot(SavedGameData, SaveSlot, UserIndex, SavedDelegate);
-	}
+	}*/
 
 	/*if (SavedGameData)
 	{

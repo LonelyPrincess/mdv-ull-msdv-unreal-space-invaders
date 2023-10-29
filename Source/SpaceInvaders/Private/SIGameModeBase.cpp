@@ -82,12 +82,11 @@ void ASIGameModeBase::OnPlayerZeroLifes(int64 playerScore) {
 	UE_LOG(LogTemp, Warning, TEXT("Current highest score is %i"), currentHighestScore);
 	if (playerScore > currentHighestScore) {
 		UE_LOG(LogTemp, Warning, TEXT("New highest score is %i"), playerScore);
-		gameInstance->SaveHighestScore(playerScore);
+		gameInstance->UpdateHighestScore(playerScore);
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("%i > %i = false"), playerScore, currentHighestScore);
+		UE_LOG(LogTemp, Warning, TEXT("%i > %i = false, so high score won't be updated"), playerScore, currentHighestScore);
 	}
-	gameInstance->SaveHighestScore(playerScore);
 
 	EndGame();
 }

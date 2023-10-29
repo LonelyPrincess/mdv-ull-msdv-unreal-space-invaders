@@ -12,7 +12,7 @@ class SPACEINVADERS_API USISaveGame : public USaveGame
 public:
 
 	// Variable to store the highest score achieved by the player
-	UPROPERTY(VisibleAnywhere, Category = "Game statistics")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Game statistics")
 	int64 HighestScore;
 
 };
