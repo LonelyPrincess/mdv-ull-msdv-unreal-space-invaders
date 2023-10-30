@@ -228,15 +228,13 @@ void ASIPawn::DestroyPlayer() {
 		// Decrease amount of lives of the user
 		--this->playerLifes;
 
-		UStaticMeshComponent* LocalMeshComponent = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
-
 		// Trigger visual effect on explosion
-		UNiagaraComponent* NiagaraComponent = Cast<UNiagaraComponent>(GetComponentByClass(UNiagaraComponent::StaticClass()));
-		if (NiagaraComponent != nullptr && ExplosionFX != nullptr) {
-			UNiagaraFunctionLibrary::SpawnSystemAttached(ExplosionFX, LocalMeshComponent, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+		if (ExplosionFX != nullptr) {
+			UNiagaraFunctionLibrary::SpawnSystemAttached(ExplosionFX, RootComponent, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
 		}
 
 		// Hide Static Mesh Component
+		UStaticMeshComponent* LocalMeshComponent = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
 		if (LocalMeshComponent != nullptr) {
 			LocalMeshComponent->SetVisibility(false);
 		}
