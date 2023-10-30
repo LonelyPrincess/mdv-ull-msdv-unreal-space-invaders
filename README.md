@@ -159,6 +159,15 @@ The following video illustrates the final output after the described changes. Th
 
 TODO: Describe process to add new FX during player / invader explosion.
 
+- Create emitter
+- Create system from emitter
+- Create variable of type NiagaraSystem to allow configuration of FX to use
+- Trigger effect with this code:
+
+```
+UNiagaraFunctionLibrary::SpawnSystemAttached(ExplosionFX, RootComponent, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+```
+
 ## Additional project information
 
 ### 🖥️ Project specs
