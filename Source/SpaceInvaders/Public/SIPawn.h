@@ -100,6 +100,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender config")
 	class USoundCue* AudioExplosion;
 
+	// Niagara system with the FX that will be executed when the ship explodes
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender config")
+	class UNiagaraSystem* ExplosionFX;
+
 	// Overlap event handler
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 

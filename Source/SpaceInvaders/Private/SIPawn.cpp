@@ -10,6 +10,8 @@
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
 #include "Bullet.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 ASIPawn::ASIPawn()
@@ -227,6 +229,13 @@ void ASIPawn::DestroyPlayer() {
 		--this->playerLifes;
 
 		UStaticMeshComponent* LocalMeshComponent = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
+
+		// Trigger visual effect on explosion
+		UNiagaraComponent* NiagaraComponent = Cast<UNiagaraComponent>(GetComponentByClass(UNiagaraComponent::StaticClass()));
+		if (NiagaraComponent != nullptr && ExplosionFX != nullptr) {
+			UNiagaraFunctionLibrary::SpawnSystemAttached(ExplosionFX, LocalMeshComponent, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+		}
+
 		// Hide Static Mesh Component
 		if (LocalMeshComponent != nullptr) {
 			LocalMeshComponent->SetVisibility(false);
