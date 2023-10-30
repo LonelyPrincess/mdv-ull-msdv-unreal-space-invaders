@@ -155,6 +155,10 @@ The following video illustrates the final output after the described changes. Th
 
 ![Highest score update preview](./Screenshots/highest-score-update-preview.gif)
 
+### ✨ Creating visual effects
+
+TODO: Describe process to add new FX during player / invader explosion.
+
 ## Additional project information
 
 ### 🖥️ Project specs
@@ -166,9 +170,10 @@ The following video illustrates the final output after the described changes. Th
 ### 🎨 Resources
 
 - [Space Invaders - UE4](https://github.com/iestevez/spaceinvaders)
+- [Space Invaders - UE5](https://github.com/iestevez/spaceinvaders_ue5)
 
 ### 🔗 References
 
-- [Space Invaders - UE5](https://github.com/iestevez/spaceinvaders_ue5)
-- [UE Docs - Saving and loading your game](https://docs.unrealengine.com/5.3/en-US/saving-and-loading-your-game-in-unreal-engine/)
+- [Unreal Engine Docs - Saving and loading your game](https://docs.unrealengine.com/5.3/en-US/saving-and-loading-your-game-in-unreal-engine/)
 - [Awesometuts - Saving and loading game data in Unreal Engine](https://awesometuts.com/blog/save-load-game-data-unreal-engine/#elementor-toc__heading-anchor-8)
+- [Epic Games Dev Community - Using Niagara in C++](https://dev.epicgames.com/community/learning/tutorials/Gx5j/using-niagara-in-c)
