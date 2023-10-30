@@ -1,10 +1,47 @@
 # Space Invaders
 
-This project contains a custom implementation of the _Space Invaders_ game developed with Unreal Engine 5.
+This project contains a custom implementation of the _Space Invaders_ game developed with Unreal Engine 5. It was created for educational purposes as one of the projects for the [videogame development degree](https://www.ull.es/masteres/desarrollo-videojuegos/) in University of La Laguna.
+
+## About the game
+
+In this game **the player will control a ship and gain points by surviving to the attacks of hordes of enemies** which move on squads. The more ships are taken down during the course of the game, the highest the player score will be.
+
+Players will be able to move to the sides and shoot. Destroying invaders will be key to make dodging enemy attacks more easily and survive for longer periods of time, so this fire mechanic is key to achieve a good score.
+
+### 🎮 Game controls
+
+The following keyboard controls have be defined for this game:
+
+| Action | Button |
+| --- | --- |
+| Move left | Left arrow |
+| Move right | Right arrow |
+| Shoot | Space |
+| Pause game | Enter |
+
+In case different controls are desired, these mappings can be reconfigured anytime in the _"Engine - Input > Bindings"_ section of the _"Project Settings"_ panel.
 
 ## Development notes
 
-TODO
+The current project has been development by using C++ classes together with Blueprints. Most core features of the game were developed following the tutorials in class, so this development report won't get into details about the initial steps. Instead, it'll focus only on the new features added to the base project.
+
+However, a brief summary of the main C++ classes is listed below:
+
+- `SIGameModeBase` defines a custom game mode which will be used in the game map. This is one of the key classes, were we'll define many of the delegate methods used to handle different in-game events and trigger a spawn of the enemy squads.
+
+- `SIPawn` defines the behaviour of the player, implementing all of the controlled ship's mechanics.
+
+- `SIInvader` defines the behaviour of each individual invader ship, including how it randomly initiates a new shoot or enters a free jump mode which will end up with its self-destruction.
+
+- `SIBullet` defines the behaviour of the bullets that both the player and invaders can shoot.
+
+- `SIInvaderSquad` spawns invaders to form a squad, and also handles the way they move. It ensures all invaders move in unison to the same direction, and also that they change direction when they reach any of the screen limits to the sides.
+
+Two HUD widgets are also present in the game, with them being:
+
+- `W_MenuHUD` contains all the visual elements and the behaviour of the main menu. This offers a button for the player to either close or start the game.
+
+- `W_HUD` contains the HUD elements that will be displayed in-game, including the amount of lives the player has left and the score they have achieved so far.
 
 ### 👾 Multiple agent types in invader squads
 
@@ -123,6 +160,7 @@ The following video illustrates the final output after the described changes. Th
 ### 🖥️ Project specs
 
 - **Unreal Engine:** 5.3.1
+- **Visual Studio:** Community, 2022
 - **Operating System:** Windows 10, 64 bits
 
 ### 🎨 Resources
