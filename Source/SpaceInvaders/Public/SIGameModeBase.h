@@ -31,12 +31,16 @@ public:
 public:
 
 	// Class that will be used to spawn squads
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level Layout")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Squad settings")
 	TSubclassOf<class AInvaderSquad> InvaderSquadClass;
 
 	// Position where squads will be created
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Level Layout")
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad settings")
 	FVector spawnLocation;
+
+	// Base speed increase that'll be used to make new squads move faster
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad settings")
+	float baseSpeedIncrease;
 
 	UFUNCTION(BlueprintCallable)
 	void RegenerateSquad();
