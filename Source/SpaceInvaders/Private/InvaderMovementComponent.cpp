@@ -6,14 +6,14 @@
 
 // Constructor to initialize class parameters
 UInvaderMovementComponent::UInvaderMovementComponent()
-	: state{ InvaderMovementType::STOP }
-	, horizontalVelocity{ 1000.0f }
+	: horizontalVelocity{ 1000.0f }
 	, verticalVelocity{ 1000.0f }
+	, state{ InvaderMovementType::STOP }
 	, descendingStep{ 100.0f }
+	, numberOfTargetPoints{ 5 }
 	, freeJumpRadius{ 300.0f }
 	, freeJumpVelocity{ 1000.0f }
 	, deltaAlphaInterpolation{ 1.0f / 30.0f }
-	, numberOfTargetPoints{ 5 }
 	, previousState{ InvaderMovementType::STOP }
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
