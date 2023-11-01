@@ -36,6 +36,10 @@ ASIPawn::ASIPawn()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio");
 	AudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 
+	// Add scene component which can be used to customize the position in which bullets will be spawned
+	BulletSpawnPointComponent = CreateDefaultSubobject<USceneComponent>("BulletSpawnPoint");
+	BulletSpawnPointComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+
 }
 
 // Set a static mesh
@@ -143,8 +147,8 @@ void ASIPawn::OnFire() {
 	if (bFrozen)
 		return;
 
-	FVector spawnLocation = GetActorLocation();
-	FRotator spawnRotation = GetActorRotation();
+	FVector spawnLocation = BulletSpawnPointComponent->GetComponentLocation();
+	FRotator spawnRotation = BulletSpawnPointComponent->GetComponentRotation();
 	ABullet* spawnedBullet;
 	bulletTemplate->velocity = bulletVelocity;
 	bulletTemplate->dir = GetActorForwardVector();

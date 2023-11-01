@@ -53,6 +53,9 @@ private:
 	UPROPERTY()
 	class UAudioComponent* AudioComponent;
 
+	UPROPERTY(EditAnywhere)
+	class USceneComponent* BulletSpawnPointComponent;
+
 	static constexpr const TCHAR* defaultStaticMeshPath = TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'");
 
 public:
