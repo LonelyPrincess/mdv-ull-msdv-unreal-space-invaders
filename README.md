@@ -168,7 +168,7 @@ Niagara has been used to achieve this. First of all, new _"Niagara Emitter"_ ins
 
 These systems are what we'll use in our source code to run the effects when necessary. The following code illustrates how we're currently executing an explosion effect when the player dies:
 
-```
+```c++
 // Trigger visual effect on explosion
 if (ExplosionFX != nullptr) {
 	UNiagaraFunctionLibrary::SpawnSystemAttached(ExplosionFX, RootComponent, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
@@ -179,7 +179,7 @@ Here, `ExplosionFX` is a reference to the Niagara System associated with the exp
 
 As for the effect displayed when either the player or an enemy ship fires a bullet, code in use is mostly the same. Difference lies, however, in that the effect is triggered into a different position. An empty `USceneComponent` element was added to both `SIPawn` and `Invader` classes to customize the spawn point for bullets, so they're not generated in the middle of the ship.
 
-```
+```c++
 // Add scene component which can be used to customize the position in which bullets will be spawned
 BulletSpawnPoint = CreateDefaultSubobject<USceneComponent>("BulletSpawnPoint");
 BulletSpawnPoint->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
@@ -194,6 +194,32 @@ Customization of this spawn point improved the result of adding a visual effect 
 Result of applying these special effects can be observed in the image below:
 
 ![Visual effects preview](./Screenshots/visual-effects-preview.gif)
+
+### 💹 Increasing difficulty
+
+In order to make the difficulty of the game increase gradually based on the amount of squads that have been taken down, a new `baseSpeedIncrease` property has been added to the `SIGameModeBase`. Value of this property can be customized anytime in `BP_SIGameModeBase`.
+
+The forementioned property will be used to increase the game difficulty every time a new squad is generated, making each squad move faster than the previous one. This is being done in this piece of code located in the `RegenerateSquad` method of `SIGameModeBase`:
+
+```c++
+// Increase speed of the new squad based on the amount of previously destroyed squads
+if (destroyedSquads > 0) {
+	float multiplier = 1.0f + ((float) destroyedSquads * baseSpeedIncrease);
+	this->spawnedInvaderSquad->IncreaseSpeed(multiplier);
+}
+```
+
+The `IncreaseSpeed` method of the `InvaderSquad` class will apply the specified multiplier to the following parameters:
+
+- Squad's `horizontalVelocity` (to increase movement speed in the horizontal axis)
+- Squad's `verticalVelocity` (to increase movement speed in the vertical axis)
+- Each squad member's `fireRate` (to increase odds of them firing)
+
+As we can see in the code above, the multiplier applied to the squad speed will be dependant on the amount of squads that have been destroyed so far (`destroyedSquads`). The more squads have been destroyed, the faster the newly generated squad will move.
+
+The following picture illustrates the result by applying a `baseSpeedIncrease` of `1`. This means speed for the second squad will double the speed of the first, so it's easy to notice the difference between them on a short time span.
+
+![Difficulty increase preview](./Screenshots/difficulty-increase-preview.gif)
 
 ## Additional project information
 
