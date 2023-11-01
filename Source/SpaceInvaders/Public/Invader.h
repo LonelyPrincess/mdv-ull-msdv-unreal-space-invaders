@@ -38,10 +38,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USoundCue* AudioJet;
 
+	// Niagara system with the FX that will be executed when the ship explodes
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraSystem* ExplosionFX;
+
+	// Niagara system with the FX that will be executed when the ship shoots
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UNiagaraSystem* ShootFX;
+
 	// Define class that will be used to instance bullets 
 	//	("TSubclassOf" guarantees one can only choose among those that inherit from "ABullet")
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSubclassOf<class ABullet> bulletClass;
+
+	UPROPERTY(EditAnywhere)
+	class USceneComponent* BulletSpawnPoint;
 
 	// Movement component to use on invader
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)

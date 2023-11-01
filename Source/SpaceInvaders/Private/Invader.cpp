@@ -3,6 +3,8 @@
 
 #include "Invader.h"
 #include "SIGameModeBase.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 AInvader::AInvader()
@@ -29,6 +31,10 @@ AInvader::AInvader()
 	// Add audio component to play certain sounds on invader actions
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio");
 	AudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+
+	// Add scene component which can be used to customize the position in which bullets will be spawned
+	BulletSpawnPoint = CreateDefaultSubobject<USceneComponent>("BulletSpawnPoint");
+	BulletSpawnPoint->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 
 	// Add movement component to the invader
 	// We do not use "AttachTo" in this case because this ain't a scene component, but an actor component which no transform element
@@ -106,8 +112,8 @@ void AInvader::SetInvaderMesh(UStaticMesh* newStaticMesh, const FString path, FV
 // Method to perform a new shot
 void AInvader::Fire() {
 
-	FVector spawnLocation = GetActorLocation();
-	FRotator spawnRotation = GetActorRotation();
+	FVector spawnLocation = BulletSpawnPoint->GetComponentLocation();
+	FRotator spawnRotation = BulletSpawnPoint->GetComponentRotation();
 	ABullet* spawnedBullet;
 
 	if (this->bulletTemplate) {
@@ -119,6 +125,11 @@ void AInvader::Fire() {
 		spawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		spawnParameters.Template = this->bulletTemplate;
 		spawnedBullet = (ABullet*)GetWorld()->SpawnActor<ABullet>(spawnLocation, spawnRotation, spawnParameters);
+
+		// Trigger visual effect on explosion
+		if (ShootFX != nullptr) {
+			UNiagaraFunctionLibrary::SpawnSystemAttached(ShootFX, BulletSpawnPoint, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+		}
 
 		// If SFX is defined for shoot action, play it
 		if (AudioComponent != nullptr && AudioShoot != nullptr) {
@@ -201,6 +212,11 @@ void AInvader::InvaderDestroyed() {
 		bFrozen = true; // Invader can't move or fire while being destroyed
 
 		UStaticMeshComponent* LocalMeshComponent = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
+
+		// Trigger visual effect on explosion
+		if (ExplosionFX != nullptr) {
+			UNiagaraFunctionLibrary::SpawnSystemAttached(ExplosionFX, RootComponent, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+		}
 
 		// Hide static mesh component so object it's not visible anymore
 		if (LocalMeshComponent != nullptr) {
