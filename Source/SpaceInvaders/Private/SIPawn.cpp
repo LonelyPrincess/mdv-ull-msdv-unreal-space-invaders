@@ -167,10 +167,10 @@ void ASIPawn::OnFire() {
 	// Assign sound that will be played on shoot
 	if (AudioComponent != nullptr && AudioShoot != nullptr) {
 		AudioComponent->SetSound(AudioShoot);
-	}
 
-	// Reproduce a sound when the user shoots
-	AudioComponent->Play();
+		// Reproduce a sound when the user shoots
+		AudioComponent->Play();
+	}
 
 }
 
