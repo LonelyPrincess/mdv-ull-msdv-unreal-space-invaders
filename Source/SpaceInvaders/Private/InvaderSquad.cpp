@@ -242,3 +242,18 @@ void AInvaderSquad::RemoveInvader(int32 ind) {
 		}
 	}
 }
+
+// Increase movement speed of the whole squad based on the specified multiplier
+void AInvaderSquad::IncreaseSpeed(float multiplier) {
+
+	verticalVelocity *= multiplier;
+	horizontalVelocity *= multiplier;
+
+	// Increase odds of invaders shooting
+	for (auto invader : SquadMembers) {
+		if (invader) {
+			invader->IncreaseFireRate(multiplier);
+		}
+	}
+
+}

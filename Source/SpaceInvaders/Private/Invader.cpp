@@ -253,3 +253,7 @@ int32 AInvader::GetPositionInSquad()
 float AInvader::GetBoundRadius() {
 	return this->boundRadius;
 }
+
+void AInvader::IncreaseFireRate(float multiplier) {
+	this->fireRate *= multiplier;
+}

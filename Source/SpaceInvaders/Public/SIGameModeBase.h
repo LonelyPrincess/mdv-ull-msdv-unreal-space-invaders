@@ -50,6 +50,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	AInvaderSquad* spawnedInvaderSquad;
 
+	int32 destroyedSquads;
+
 public:
 
 	// We create delegates for supported event types		// Emitter -> Subscriber(s)
