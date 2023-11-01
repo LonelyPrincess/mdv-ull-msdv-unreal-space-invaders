@@ -54,7 +54,7 @@ private:
 	class UAudioComponent* AudioComponent;
 
 	UPROPERTY(EditAnywhere)
-	class USceneComponent* BulletSpawnPointComponent;
+	class USceneComponent* BulletSpawnPoint;
 
 	static constexpr const TCHAR* defaultStaticMeshPath = TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'");
 
@@ -106,6 +106,10 @@ public:
 	// Niagara system with the FX that will be executed when the ship explodes
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender config")
 	class UNiagaraSystem* ExplosionFX;
+
+	// Niagara system with the FX that will be executed when the ship shoots
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Defender config")
+	class UNiagaraSystem* ShootFX;
 
 	// Overlap event handler
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
