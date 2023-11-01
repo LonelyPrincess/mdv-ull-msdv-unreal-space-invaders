@@ -144,7 +144,7 @@ private:
 	int64 playerPoints;
 
 	// Bindings to delegates
-	void InvaderDestroyed(int32 id);
+	void InvaderDestroyed(int32 id, bool killedByPlayer);
 	void SquadDissolved(int32 val);
 	void SquadSuccessful();
 

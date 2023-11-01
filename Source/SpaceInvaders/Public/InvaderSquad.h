@@ -121,7 +121,7 @@ private:
 	void SquadOnLeftSide();
 	void SquadOnRightSide();
 	void SquadFinishesDown();
-	void RemoveInvader(int32 ind);
+	void RemoveInvader(int32 ind, bool killedByPlayer);
 
 	// Reference to game mode, which will be used to listen or emit events
 	UPROPERTY()

@@ -170,7 +170,7 @@ void AInvader::NotifyActorBeginOverlap(AActor* OtherActor) {
 
 				OtherActor->Destroy();
 				// Trigger event indicating invader has been killed
-				MyGameMode->InvaderDestroyed.Broadcast(this->positionInSquad);
+				MyGameMode->InvaderDestroyed.Broadcast(this->positionInSquad, true);
 				InvaderDestroyed();
 				return;
 			}
@@ -184,7 +184,7 @@ void AInvader::NotifyActorBeginOverlap(AActor* OtherActor) {
 
 		// Overlap with anything in freejump (except invaders and their own bullets) causes a silent destroy
 		if (bFreeJump) {
-			MyGameMode->InvaderDestroyed.Broadcast(this->positionInSquad);
+			MyGameMode->InvaderDestroyed.Broadcast(this->positionInSquad, false);
 			Destroy();
 			return;
 		}

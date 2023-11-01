@@ -232,7 +232,7 @@ void AInvaderSquad::SquadFinishesDown() {
 }
 
 // Method to remove an invader from the squad when it dies
-void AInvaderSquad::RemoveInvader(int32 ind) {
+void AInvaderSquad::RemoveInvader(int32 ind, bool killedByPlayer) {
 	SquadMembers[ind] = nullptr;
 	--this->numberOfMembers;
 	if (this->numberOfMembers == 0) {
