@@ -37,8 +37,8 @@ ASIPawn::ASIPawn()
 	AudioComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 
 	// Add scene component which can be used to customize the position in which bullets will be spawned
-	BulletSpawnPointComponent = CreateDefaultSubobject<USceneComponent>("BulletSpawnPoint");
-	BulletSpawnPointComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+	BulletSpawnPoint = CreateDefaultSubobject<USceneComponent>("BulletSpawnPoint");
+	BulletSpawnPoint->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 
 }
 
@@ -147,8 +147,8 @@ void ASIPawn::OnFire() {
 	if (bFrozen)
 		return;
 
-	FVector spawnLocation = BulletSpawnPointComponent->GetComponentLocation();
-	FRotator spawnRotation = BulletSpawnPointComponent->GetComponentRotation();
+	FVector spawnLocation = BulletSpawnPoint->GetComponentLocation();
+	FRotator spawnRotation = BulletSpawnPoint->GetComponentRotation();
 	ABullet* spawnedBullet;
 	bulletTemplate->velocity = bulletVelocity;
 	bulletTemplate->dir = GetActorForwardVector();
@@ -158,6 +158,11 @@ void ASIPawn::OnFire() {
 	spawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	spawnParameters.Template = bulletTemplate;
 	spawnedBullet = Cast<ABullet>(GetWorld()->SpawnActor(bulletClass, &spawnLocation, &spawnRotation, spawnParameters));
+
+	// Trigger visual effect on explosion
+	if (ShootFX != nullptr) {
+		UNiagaraFunctionLibrary::SpawnSystemAttached(ShootFX, BulletSpawnPoint, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+	}
 
 	// Assign sound that will be played on shoot
 	if (AudioComponent != nullptr && AudioShoot != nullptr) {
