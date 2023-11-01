@@ -195,7 +195,7 @@ Result of applying these special effects can be observed in the image below:
 
 ![Visual effects preview](./Screenshots/visual-effects-preview.gif)
 
-### 💹 Increasing difficulty
+### 📈 Increasing difficulty
 
 In order to make the difficulty of the game increase gradually based on the amount of squads that have been taken down, a new `baseSpeedIncrease` property has been added to the `SIGameModeBase`. Value of this property can be customized anytime in `BP_SIGameModeBase`.
 
@@ -241,6 +241,10 @@ void ASIPawn::InvaderDestroyed(int32 id, bool killedByPlayer) {
 	}
 }
 ```
+
+### 🚧 Creating barriers
+
+TODO
 
 ## Additional project information
 
