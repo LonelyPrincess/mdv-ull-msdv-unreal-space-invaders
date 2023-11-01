@@ -221,6 +221,27 @@ The following picture illustrates the result by applying a `baseSpeedIncrease` o
 
 ![Difficulty increase preview](./Screenshots/difficulty-increase-preview.gif)
 
+### 🎰 Adjusting rewards based on invader's death cause
+
+In the game as it was after completing the tutorial, the user would always get points for any invader that was destroyed. This included, not only those that were destroyed by the player bullets, but also invaders who entered free jump mode and disappeared from screen.
+
+Adjustments have been made in `SIPawn` so user doesn't get a full score for a invader whose death had nothing to do with them. Instead, they'll only get the maximum `pointsPerInvader` for invaders who really died by their hands.
+
+In order to do this, the delegate function used for the `InvaderDestroyed` event has been modified to receive a boolean parameter indicating whether the invader was killed by the player or not. We'll make use of this new parameter to reward the user with a different amount of points based on the situation, as can be seen in the code below:
+
+```c++
+// Increase user score when a invader is destroyed
+// Amount of awarded points will be reduced to half for invaders who self-destroyed
+void ASIPawn::InvaderDestroyed(int32 id, bool killedByPlayer) {
+	if (killedByPlayer) {
+		this->playerPoints += this->pointsPerInvader;
+	}
+	else {
+		this->playerPoints += this->pointsPerInvader * 0.5;
+	}
+}
+```
+
 ## Additional project information
 
 ### 🖥️ Project specs
