@@ -4,8 +4,8 @@
 // Constructor for GameMode class, which overrides default classes for pawn and player controller
 ASIGameModeBase::ASIGameModeBase()
 	: spawnLocation{ }
-	, spawnedInvaderSquad{}
 	, baseSpeedIncrease{ 0.1f }
+	, spawnedInvaderSquad{}
 	, destroyedSquads{ 0 }
 {
 	DefaultPawnClass = ASIPawn::StaticClass();
