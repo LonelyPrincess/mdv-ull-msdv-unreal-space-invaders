@@ -86,6 +86,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetBoundRadius();
 
+	// Increase fire rate based on the given multiplier
+	void IncreaseFireRate(float multiplier);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

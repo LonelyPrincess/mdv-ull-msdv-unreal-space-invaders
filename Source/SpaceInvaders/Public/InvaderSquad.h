@@ -127,4 +127,9 @@ private:
 	UPROPERTY()
 	class ASIGameModeBase* MyGameMode;
 
+public:
+
+	// Increases movement speed for the squad
+	void IncreaseSpeed(float multiplier);
+
 };

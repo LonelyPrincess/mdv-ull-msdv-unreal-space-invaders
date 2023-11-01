@@ -142,8 +142,6 @@ void ASIPawn::OnMove(float value) {
 // Handler for shoot event
 void ASIPawn::OnFire() {
 
-	UE_LOG(LogTemp, Display, TEXT("Fire event triggered!"));
-
 	if (bFrozen)
 		return;
 
