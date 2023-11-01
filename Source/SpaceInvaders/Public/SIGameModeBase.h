@@ -15,6 +15,7 @@ DECLARE_DELEGATE(FStandardDelegateSignature)
 DECLARE_MULTICAST_DELEGATE_OneParam(FOneParamMulticastDelegateSignature, int32)
 DECLARE_DELEGATE_OneParam(FOneParamDelegateSignature, int32)
 DECLARE_DELEGATE_OneParam(FOneLongIntParamDelegateSignature, int64)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FTwoParamsMulticastDelegateSignature, int32, bool)
 
 /**
  * 
@@ -63,7 +64,7 @@ public:
 	FStandardDelegateSignature SquadOnRightSide;			// Invader -> Squad
 	FStandardDelegateSignature SquadFinishesDown;			// Invader -> Squad
 	FStandardDelegateSignature SquadSuccessful;				// Invader -> Game Mode
-	FOneParamMulticastDelegateSignature InvaderDestroyed;	// Invader -> Squad, Player
+	FTwoParamsMulticastDelegateSignature InvaderDestroyed;	// Invader -> Squad, Player
 
 	FOneParamMulticastDelegateSignature NewSquad;			// Squad -> Game Mode 
 	FOneLongIntParamDelegateSignature PlayerZeroLifes;		// Player -> Game Mode
