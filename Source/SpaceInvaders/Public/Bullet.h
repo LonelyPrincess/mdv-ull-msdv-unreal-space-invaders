@@ -63,6 +63,6 @@ private:
 
 	// This variable contains list of objects that will cause the bullet to self-destruct
 	// "FName" is the right datatype to store tags in UE
-	FName autoDestroyTags[4] = { TEXT("BottomLimit"), TEXT("RightLimit"), TEXT("LeftLimit"), TEXT("TopLimit") };
+	FName autoDestroyTags[5] = { TEXT("BottomLimit"), TEXT("RightLimit"), TEXT("LeftLimit"), TEXT("TopLimit"), TEXT("BarrierSegment") };
 
 };
