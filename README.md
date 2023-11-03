@@ -246,6 +246,14 @@ void ASIPawn::InvaderDestroyed(int32 id, bool killedByPlayer) {
 
 TODO
 
+- Create barrier and barrier segment classes
+- Barrier spawns segments, which have collision set
+- Segment stores reference to parent barrier, and calls event when destroyed
+- Delegate for segment destroy event is at barrier instance, so we can have multiple on screen
+- Segment disappears when something collides against it
+- Barrier is gone when all of its segments are destroyed
+- Bullet was modified to self-destroy when impacting against barrier
+
 ## Additional project information
 
 ### 🖥️ Project specs
