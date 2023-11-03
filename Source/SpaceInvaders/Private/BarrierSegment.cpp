@@ -47,6 +47,9 @@ void ABarrierSegment::NotifyActorBeginOverlap(AActor* OtherActor) {
 		return;
 	}
 
+	// Disable collisions so this doesn't run again
+	SetActorEnableCollision(false);
+
 	if (BarrierBreakFX != nullptr) {
 		UNiagaraFunctionLibrary::SpawnSystemAttached(BarrierBreakFX, RootComponent, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
 	}
@@ -57,15 +60,7 @@ void ABarrierSegment::NotifyActorBeginOverlap(AActor* OtherActor) {
 	}
 
 	UWorld* TheWorld = GetWorld();
-
-	if (parent != nullptr) {
-		parent->SegmentDestroyed.ExecuteIfBound(segmentIndex);
-	}
-
-	// Destroy();
-
-	// Wait some time (2 secs) before triggering the actual destruction of the actor object
-	// TheWorld->GetTimerManager().SetTimer(timerHandle, this, &ABarrier::Destroy, 1.0f, false);
+	TheWorld->GetTimerManager().SetTimer(timerHandle, this, &ABarrierSegment::SelfDestruct, 1.0f, false);
 
 }
 
@@ -80,4 +75,13 @@ void ABarrierSegment::SetSegmentIndex(int32 index) {
 
 void ABarrierSegment::SetParent(ABarrier* barrier) {
 	this->parent = barrier;
+}
+
+void ABarrierSegment::SelfDestruct() {
+	UE_LOG(LogTemp, Warning, TEXT("Barrier segment %i is running self-destruct!"), this->segmentIndex);
+	if (parent != nullptr) {
+		parent->SegmentDestroyed.ExecuteIfBound(segmentIndex);
+	}
+
+	Destroy();
 }
