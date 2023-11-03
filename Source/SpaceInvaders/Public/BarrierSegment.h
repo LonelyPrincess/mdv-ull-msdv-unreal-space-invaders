@@ -39,12 +39,15 @@ public:
 	float GetBoundRadius();
 
 	void SetSegmentIndex(int32 index);
+	void SetParent(class ABarrier* barrier);
 
 private:
 
 	// Position in barrier will be a read-only value in editor: it can be set via C++ code alone
 	UPROPERTY(VisibleInstanceOnly)
 	int32 segmentIndex;
+
+	class ABarrier* parent;
 
 	UPROPERTY(VisibleInstanceOnly)
 	FVector boundOrigin;

@@ -6,12 +6,17 @@
 #include "GameFramework/Actor.h"
 #include "Barrier.generated.h"
 
+DECLARE_DELEGATE_OneParam(FSegmentDestroyedDelegateSignature, int32);
+
 UCLASS()
 class SPACEINVADERS_API ABarrier : public AActor
 {
 	GENERATED_BODY()
 	
 public:
+
+	// Event to identify that a segment has been lost
+	FSegmentDestroyedDelegateSignature SegmentDestroyed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrier config")
 	int32 nRows;

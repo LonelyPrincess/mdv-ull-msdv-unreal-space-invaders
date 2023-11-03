@@ -3,8 +3,6 @@
 
 #include "Barrier.h"
 #include "BarrierSegment.h"
-#include "SIGameModeBase.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABarrier::ABarrier()
@@ -24,12 +22,7 @@ void ABarrier::BeginPlay()
 
 	UWorld* TheWorld = GetWorld();
 
-	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(TheWorld);
-	ASIGameModeBase* MyGameMode = Cast<ASIGameModeBase>(GameMode);
-
-	if (MyGameMode != nullptr) {
-		MyGameMode->SegmentDestroyed.BindUObject(this, &ABarrier::OnSegmentDestroyed);
-	}
+	SegmentDestroyed.BindUObject(this, &ABarrier::OnSegmentDestroyed);
 
 	SpawnBarrierSegments();
 }
@@ -61,6 +54,7 @@ void ABarrier::SpawnBarrierSegments() {
 			spawnedSegment = GetWorld()->SpawnActor<ABarrierSegment>(spawnLocation, spawnRotation, spawnParameters);
 			spawnedSegment->SetSegmentIndex(numSegments);
 			barrierSegments.Add(spawnedSegment);
+			spawnedSegment->SetParent(this);
 			this->numSegments += 1;
 
 			// Increase offset for next spawn
