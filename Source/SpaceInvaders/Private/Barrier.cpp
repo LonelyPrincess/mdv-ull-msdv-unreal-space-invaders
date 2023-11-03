@@ -10,6 +10,7 @@
 ABarrier::ABarrier()
 	: nRows{ 2 }
 	, nCols{ 5 }
+	, numSegments{ 0 }
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -60,7 +61,7 @@ void ABarrier::SpawnBarrierSegments() {
 			spawnedSegment = GetWorld()->SpawnActor<ABarrierSegment>(spawnLocation, spawnRotation, spawnParameters);
 			spawnedSegment->SetSegmentIndex(numSegments);
 			barrierSegments.Add(spawnedSegment);
-			this->numSegments++;
+			this->numSegments += 1;
 
 			// Increase offset for next spawn
 			float r = spawnedSegment->GetBoundRadius();
@@ -83,11 +84,13 @@ void ABarrier::Tick(float DeltaTime)
 
 }
 
+// TODO: this event is being received by the two barriers!! 
+// We need to identify if the segment belongs to this instance or not, otherwise we don't have to delete anything
 // TODO: destroy when no more segments are alive
 void ABarrier::OnSegmentDestroyed(int32 index) {
 
 	barrierSegments[index] = nullptr;
-	this->numSegments--;
+	this->numSegments -= 1;
 	UE_LOG(LogTemp, Warning, TEXT("Barrier has %i segments left"), this->numSegments);
 	if (this->numSegments == 0) {
 		UE_LOG(LogTemp, Warning, TEXT("Barrier is down!"));

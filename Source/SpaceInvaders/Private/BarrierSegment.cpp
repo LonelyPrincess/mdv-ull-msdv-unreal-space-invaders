@@ -41,7 +41,7 @@ void ABarrierSegment::Tick(float DeltaTime)
 
 void ABarrierSegment::NotifyActorBeginOverlap(AActor* OtherActor) {
 
-	UE_LOG(LogTemp, Warning, TEXT("Barrier overlapped with %s"), *(OtherActor->GetName()));
+	UE_LOG(LogTemp, Warning, TEXT("Barrier segment %i overlapped with %s"), this->segmentIndex, *(OtherActor->GetName()));
 	if (OtherActor->GetClass()->IsChildOf(ABarrierSegment::StaticClass())) {
 		return;
 	}
@@ -65,7 +65,7 @@ void ABarrierSegment::NotifyActorBeginOverlap(AActor* OtherActor) {
 		MyGameMode->SegmentDestroyed.ExecuteIfBound(segmentIndex);
 	}
 
-	//Destroy();
+	Destroy();
 
 	// Wait some time (2 secs) before triggering the actual destruction of the actor object
 	// TheWorld->GetTimerManager().SetTimer(timerHandle, this, &ABarrier::Destroy, 1.0f, false);
@@ -77,5 +77,6 @@ float ABarrierSegment::GetBoundRadius() {
 }
 
 void ABarrierSegment::SetSegmentIndex(int32 index) {
+	UE_LOG(LogTemp, Warning, TEXT("Barrier segment assigned index %i"), index);
 	this->segmentIndex = index;
 }
