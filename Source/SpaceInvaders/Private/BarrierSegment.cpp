@@ -1,6 +1,5 @@
 #include "Barrier.h"
 #include "BarrierSegment.h"
-#include "SIGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -58,11 +57,8 @@ void ABarrierSegment::NotifyActorBeginOverlap(AActor* OtherActor) {
 
 	UWorld* TheWorld = GetWorld();
 
-	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(TheWorld);
-	ASIGameModeBase* MyGameMode = Cast<ASIGameModeBase>(GameMode);
-
-	if (MyGameMode != nullptr) {
-		MyGameMode->SegmentDestroyed.ExecuteIfBound(segmentIndex);
+	if (parent != nullptr) {
+		parent->SegmentDestroyed.ExecuteIfBound(segmentIndex);
 	}
 
 	Destroy();
@@ -79,4 +75,8 @@ float ABarrierSegment::GetBoundRadius() {
 void ABarrierSegment::SetSegmentIndex(int32 index) {
 	UE_LOG(LogTemp, Warning, TEXT("Barrier segment assigned index %i"), index);
 	this->segmentIndex = index;
+}
+
+void ABarrierSegment::SetParent(ABarrier* barrier) {
+	this->parent = barrier;
 }
