@@ -55,7 +55,12 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	float boundRadius;
 
+	// Timer to control waiting after destruction
 	FTimerHandle timerHandle;
+
+	// Method that's called after the fragment has been destroyed, after enough time has passed
+	UFUNCTION()
+	void SelfDestruct();
 
 	static constexpr const TCHAR* staticMeshPath = TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'");
 
