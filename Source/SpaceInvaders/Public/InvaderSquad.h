@@ -77,7 +77,7 @@ protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
 	int32 nRows;
 
-	// Number of invaders on each column
+	// Number of invaders on each row
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
 	int32 nCols;
 
