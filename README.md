@@ -253,6 +253,7 @@ TODO
 - Segment disappears when something collides against it
 - Barrier is gone when all of its segments are destroyed
 - Bullet was modified to self-destroy when impacting against barrier
+- Niagara FX also shows when segment breaks
 
 ## Additional project information
 
