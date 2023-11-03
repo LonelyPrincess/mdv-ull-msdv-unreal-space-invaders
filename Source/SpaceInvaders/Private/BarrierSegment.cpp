@@ -1,6 +1,8 @@
 #include "Barrier.h"
 #include "BarrierSegment.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 ABarrierSegment::ABarrierSegment()
@@ -45,10 +47,9 @@ void ABarrierSegment::NotifyActorBeginOverlap(AActor* OtherActor) {
 		return;
 	}
 
-	/*
 	if (BarrierBreakFX != nullptr) {
 		UNiagaraFunctionLibrary::SpawnSystemAttached(BarrierBreakFX, RootComponent, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
-	}*/
+	}
 
 	// Hide static mesh component so object it's not visible anymore
 	if (BarrierSegmentMesh != nullptr) {
@@ -61,7 +62,7 @@ void ABarrierSegment::NotifyActorBeginOverlap(AActor* OtherActor) {
 		parent->SegmentDestroyed.ExecuteIfBound(segmentIndex);
 	}
 
-	Destroy();
+	// Destroy();
 
 	// Wait some time (2 secs) before triggering the actual destruction of the actor object
 	// TheWorld->GetTimerManager().SetTimer(timerHandle, this, &ABarrier::Destroy, 1.0f, false);
