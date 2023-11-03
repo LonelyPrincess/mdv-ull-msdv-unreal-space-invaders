@@ -1,7 +1,7 @@
-
-
-
+#include "Barrier.h"
 #include "BarrierSegment.h"
+#include "SIGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABarrierSegment::ABarrierSegment()
@@ -49,20 +49,33 @@ void ABarrierSegment::NotifyActorBeginOverlap(AActor* OtherActor) {
 	/*
 	if (BarrierBreakFX != nullptr) {
 		UNiagaraFunctionLibrary::SpawnSystemAttached(BarrierBreakFX, RootComponent, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
-	}
+	}*/
 
 	// Hide static mesh component so object it's not visible anymore
-	if (LocalMeshComponent != nullptr) {
-		LocalMeshComponent->SetVisibility(false);
+	if (BarrierSegmentMesh != nullptr) {
+		BarrierSegmentMesh->SetVisibility(false);
 	}
 
 	UWorld* TheWorld = GetWorld();
 
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(TheWorld);
+	ASIGameModeBase* MyGameMode = Cast<ASIGameModeBase>(GameMode);
+
+	if (MyGameMode != nullptr) {
+		MyGameMode->SegmentDestroyed.ExecuteIfBound(segmentIndex);
+	}
+
+	//Destroy();
+
 	// Wait some time (2 secs) before triggering the actual destruction of the actor object
-	TheWorld->GetTimerManager().SetTimer(timerHandle, this, &ABarrier::Destroy, 1.0f, false);
-	*/
+	// TheWorld->GetTimerManager().SetTimer(timerHandle, this, &ABarrier::Destroy, 1.0f, false);
+
 }
 
 float ABarrierSegment::GetBoundRadius() {
 	return this->boundRadius;
+}
+
+void ABarrierSegment::SetSegmentIndex(int32 index) {
+	this->segmentIndex = index;
 }

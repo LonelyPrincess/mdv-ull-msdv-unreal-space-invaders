@@ -3,47 +3,17 @@
 
 #include "Barrier.h"
 #include "BarrierSegment.h"
+#include "SIGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABarrier::ABarrier()
 	: nRows{ 2 }
 	, nCols{ 5 }
 {
- 	/*// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Create empty root component to apply transformations
-	USceneComponent* ContainerComponent = CreateDefaultSubobject<USceneComponent>("BarrierContainer");
-	RootComponent = ContainerComponent;
-
-	numSegments = 3;
-
-	auto MeshAsset = ConstructorHelpers::FObjectFinder<UStaticMesh>(ABarrier::defaultStaticMeshPath);
-	UStaticMesh* staticMesh = MeshAsset.Object;
-
-	for (int i = 0; i < numSegments; i++) {
-		UStaticMeshComponent* SegmentMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("BarrierSegmentMesh" + (i + 1));
-		SegmentMeshComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
-		SegmentMeshComponent->SetStaticMesh(staticMesh);
-
-		float segmentScale = 1.0f;
-
-		SegmentMeshComponent->SetWorldScale3D(FVector(segmentScale, segmentScale, segmentScale / 2.0f));
-		SegmentMeshComponent->SetRelativeScale3D(FVector(segmentScale, segmentScale, segmentScale / 2.0f));
-
-		FVector Position;
-		Position.X = i * segmentScale * 100;
-		Position.Y = 0.0f;
-		Position.Z = 0.0f;
-
-		UE_LOG(LogTemp, Warning, TEXT("Trying to change location for segment %i to X = %i"), i + 1, Position.X);
-
-		// SegmentMeshComponent->SetMobility(EComponentMobility::Movable);
-		SegmentMeshComponent->SetMobility(EComponentMobility::Movable);
-		SegmentMeshComponent->SetWorldLocation(Position);
-
-		barrierSegments.Add(SegmentMeshComponent);
-	}*/
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +21,19 @@ void ABarrier::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UWorld* TheWorld = GetWorld();
+
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(TheWorld);
+	ASIGameModeBase* MyGameMode = Cast<ASIGameModeBase>(GameMode);
+
+	if (MyGameMode != nullptr) {
+		MyGameMode->SegmentDestroyed.BindUObject(this, &ABarrier::OnSegmentDestroyed);
+	}
+
+	SpawnBarrierSegments();
+}
+
+void ABarrier::SpawnBarrierSegments() {
 	float radiusX = 0.0f;
 	float radiusY = 0.0f;
 
@@ -75,7 +58,8 @@ void ABarrier::BeginPlay()
 		for (int j = 0; j < this->nRows; j++)
 		{
 			spawnedSegment = GetWorld()->SpawnActor<ABarrierSegment>(spawnLocation, spawnRotation, spawnParameters);
-			// spawnedSegment->SetPositionInSquad(count);
+			this->numSegments++;
+			spawnedSegment->SetSegmentIndex(numSegments);
 			barrierSegments.Add(spawnedSegment);
 
 			// Increase offset for next spawn
@@ -99,10 +83,14 @@ void ABarrier::Tick(float DeltaTime)
 
 }
 
-void ABarrier::NotifyActorBeginOverlap(AActor* OtherActor) {
+// TODO: destroy when no more segments are alive
+void ABarrier::OnSegmentDestroyed(int32 index) {
 
-	UE_LOG(LogTemp, Warning, TEXT("Barrier overlapped with %s"), *(OtherActor->GetName()));
+	barrierSegments[index] = nullptr;
+	this->numSegments--;
+	if (this->numSegments == 0) {
+		UE_LOG(LogTemp, Warning, TEXT("Barrier is down!"));
+		// Destroy();
+	}
 
 }
-
-// TODO: destroy when no more segments are alive

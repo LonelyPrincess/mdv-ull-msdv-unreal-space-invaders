@@ -11,7 +11,7 @@ class SPACEINVADERS_API ABarrier : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrier config")
 	int32 nRows;
@@ -22,8 +22,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrier config")
 	TSubclassOf<class ABarrierSegment> segmentClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere)
 	TArray<class ABarrierSegment*> barrierSegments;
+
+	UPROPERTY(VisibleAnywhere)
+	int32 numSegments;
 
 	// Sets default values for this actor's properties
 	ABarrier();
@@ -34,6 +37,10 @@ protected:
 
 	// Collision event handler
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+	void OnSegmentDestroyed(int32 index);
+
+	void SpawnBarrierSegments();
 
 public:	
 	// Called every frame

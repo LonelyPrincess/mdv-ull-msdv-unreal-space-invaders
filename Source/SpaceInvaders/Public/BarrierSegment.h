@@ -38,13 +38,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetBoundRadius();
 
+	void SetSegmentIndex(int32 index);
+
 private:
+
+	// Position in barrier will be a read-only value in editor: it can be set via C++ code alone
+	UPROPERTY(VisibleInstanceOnly)
+	int32 segmentIndex;
 
 	UPROPERTY(VisibleInstanceOnly)
 	FVector boundOrigin;
 
 	UPROPERTY(VisibleInstanceOnly)
 	float boundRadius;
+
+	FTimerHandle timerHandle;
 
 	static constexpr const TCHAR* staticMeshPath = TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'");
 
