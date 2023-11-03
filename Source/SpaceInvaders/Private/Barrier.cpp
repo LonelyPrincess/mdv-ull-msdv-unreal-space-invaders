@@ -7,7 +7,7 @@
 // Sets default values
 ABarrier::ABarrier()
 	: nRows{ 2 }
-	, nCols{ 3 }
+	, nCols{ 5 }
 {
  	/*// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -84,10 +84,10 @@ void ABarrier::BeginPlay()
 				radiusX = r;
 			if (r > radiusY)
 				radiusY = r;
-			spawnLocation.X += radiusX * 2;
+			spawnLocation.X += radiusX;
 		}
 		spawnLocation.X = actorLocation.X;
-		spawnLocation.Y += radiusY * 2;
+		spawnLocation.Y += radiusY;
 	}
 	
 }
