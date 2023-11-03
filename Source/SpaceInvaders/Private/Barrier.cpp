@@ -58,9 +58,9 @@ void ABarrier::SpawnBarrierSegments() {
 		for (int j = 0; j < this->nRows; j++)
 		{
 			spawnedSegment = GetWorld()->SpawnActor<ABarrierSegment>(spawnLocation, spawnRotation, spawnParameters);
-			this->numSegments++;
 			spawnedSegment->SetSegmentIndex(numSegments);
 			barrierSegments.Add(spawnedSegment);
+			this->numSegments++;
 
 			// Increase offset for next spawn
 			float r = spawnedSegment->GetBoundRadius();
@@ -88,6 +88,7 @@ void ABarrier::OnSegmentDestroyed(int32 index) {
 
 	barrierSegments[index] = nullptr;
 	this->numSegments--;
+	UE_LOG(LogTemp, Warning, TEXT("Barrier has %i segments left"), this->numSegments);
 	if (this->numSegments == 0) {
 		UE_LOG(LogTemp, Warning, TEXT("Barrier is down!"));
 		// Destroy();
