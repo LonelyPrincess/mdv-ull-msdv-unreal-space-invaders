@@ -12,7 +12,7 @@ UCLASS()
 class SPACEINVADERS_API ABarrier : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:
 
 	// Event to identify that a segment has been lost
@@ -40,14 +40,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// Collision event handler
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-
 	void OnSegmentDestroyed(int32 index);
 
 	void SpawnBarrierSegments();
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
