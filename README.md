@@ -21,6 +21,10 @@ The following keyboard controls have be defined for this game:
 
 In case different controls are desired, these mappings can be reconfigured anytime in the _"Engine - Input > Bindings"_ section of the _"Project Settings"_ panel.
 
+### 🎦 Live preview
+
+![Game demonstration](./Screenshots/space-invaders-demo.gif)
+
 ## Development notes
 
 The current project has been development by using C++ classes together with Blueprints. Most core features of the game were developed following the tutorials in class, so this development report won't get into details about the initial steps. Instead, it'll focus only on the new features added to the base project.
