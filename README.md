@@ -244,16 +244,40 @@ void ASIPawn::InvaderDestroyed(int32 id, bool killedByPlayer) {
 
 ### 🚧 Creating barriers
 
-TODO
+Two new C++ classes, `Barrier` and `BarrierSegment`, have been added to implement this feature. **Each barrier will be composed by multiple segments**, which will be actors in their own accord.
 
-- Create barrier and barrier segment classes
-- Barrier spawns segments, which have collision set
-- Segment stores reference to parent barrier, and calls event when destroyed
-- Delegate for segment destroy event is at barrier instance, so we can have multiple on screen
-- Segment disappears when something collides against it
-- Barrier is gone when all of its segments are destroyed
-- Bullet was modified to self-destroy when impacting against barrier
-- Niagara FX also shows when segment breaks
+Content of the `Barrier` class will, similarly to the `InvaderSquad` class, spawn a set of items on a grid distribution. Number of rows and columns for this grid will be fully customizable, so one can create barriers with barely one or two segments, or larger ones that cover more space within the game map.
+
+Behaviour of the segments is pretty straightforward: they'll merely render a mesh and detect collisions. When anything collides against one of these segments, they'll break and a visual effect will show before destroying the actor completely.
+
+The following picture illustrates the way these barriers show up in the game:
+
+![Breaking barriers preview](./Screenshots/barrier-preview.gif)
+
+As seen here, **bullets will self-destruct as soon as they collide with a barrier segment** and won't pass through the next one. For this to be possible, a small change was made to the `Bullet` class so that `BarrierSegment` is one of the tags that would cause them self-destruct. Without that change, bullets would simply pass through them and reach their final destination destroying anything on their way, which defied the whole point of having barriers set up in the map.
+
+The only other thing worth mentioning about the way these classes were implemented is the mechanism to destroy the container `Barrier` object as soon as all its segments are destroyed.
+
+Contrary to what happens with the squads, for which we'll have only one instance running at the same time, **it's possible for many barriers to co-exist in the scene simultaneously**.
+
+For this reason, the `SegmentDestroyed` was not added to `SIGameModeBase` as the remaining events and, instead, was defined at `Barrier` level.
+
+Having it defined at `SIGameModeBase` level caused issues, because all barriers within the scene will receive notification of a segment destruction, even if that segment belonged to a different barrier. This was a cause for many editor crashes (mostly when having barriers with different sizes) and also have some barriers self-destruct ahead of time, while some segments where still active on it.
+
+In declaring the delegate function in the `Barrier` class, **it was possible to easily restrict communication from segments to their parent barrier**. Barrier instances should not care about segments being destroyed in other places, only about what happens to their own children.
+
+To make this work, when spawning a segment a reference to their parent is stored in a `parent` property, which they'll later use to notify the appropiate barrier of their destruction.
+
+```c++
+// Remove barrier segment instance from scene
+void ABarrierSegment::SelfDestruct() {
+	if (parent != nullptr) {
+		parent->SegmentDestroyed.ExecuteIfBound(segmentIndex);
+	}
+
+	Destroy();
+}
+```
 
 ## Additional project information
 
