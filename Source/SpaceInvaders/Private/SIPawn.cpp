@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SIPawn.h"
 
 #include "SIGameModeBase.h"
@@ -30,7 +27,8 @@ ASIPawn::ASIPawn()
  	// Set this pawn to call Tick() every frame. You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SetStaticMesh(); // Default mesh (SetStaticMesh with no arguments)
+	// Apply a mesh by default
+	SetStaticMesh();
 
 	// Initialize audio component that will be added to current actor and follow them around
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio");
@@ -42,7 +40,7 @@ ASIPawn::ASIPawn()
 
 }
 
-// Set a static mesh
+// Set a static mesh (if no params are passed, it'll use cube mesh by default)
 void ASIPawn::SetStaticMesh(UStaticMesh* staticMesh, FString path, FVector scale) {
 	UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
 	const TCHAR* tpath;
@@ -110,8 +108,6 @@ void ASIPawn::Tick(float DeltaTime)
 // Called to bind functionality to input
 void ASIPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	// Inherit default controls from parent pawn class
-	// Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// Define actions associated to each custom axis and actions we defined in "Project settions > Input"
 	PlayerInputComponent->BindAxis(TEXT("SIRight"), this, &ASIPawn::OnMove);
@@ -196,15 +192,12 @@ int32 ASIPawn::GetLifes() {
 // Handle collissions
 void ASIPawn::NotifyActorBeginOverlap(AActor* OtherActor) {
 
-	// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("%s collided with player"), *(OtherActor->GetName())));
-
 	if (!bFrozen) {
 		// User will die if collides with enemy bullet
 		if (OtherActor->IsA(ABullet::StaticClass())) {
 			ABullet* bullet = Cast<ABullet>(OtherActor);
-			UE_LOG(LogTemp, Display, TEXT("Collided with bullet"));
 			if (bullet->bulletType == BulletType::INVADER) {
-				UE_LOG(LogTemp, Display, TEXT("Collided with enemy bullet"));
+				UE_LOG(LogTemp, Display, TEXT("Player collided with enemy bullet"));
 				OtherActor->Destroy();
 				DestroyPlayer();
 			}
@@ -212,7 +205,7 @@ void ASIPawn::NotifyActorBeginOverlap(AActor* OtherActor) {
 
 		// User will also die if collides directly with an invader
 		if (OtherActor->IsA(AInvader::StaticClass())) {
-			UE_LOG(LogTemp, Display, TEXT("Collided with invader"));
+			UE_LOG(LogTemp, Display, TEXT("Player collided with invader"));
 			OtherActor->Destroy();
 			DestroyPlayer();
 		}
@@ -226,14 +219,14 @@ void ASIPawn::DestroyPlayer() {
 	TheWorld = GetWorld();
 
 	UE_LOG(LogTemp, Display, TEXT("Player was hit!"));
-	// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, TEXT("Player should die"));
 
 	if (TheWorld) {
 
-		bFrozen = true; // Pawn can't move or fire while being destroyed
+		// Pawn can't move or fire while being destroyed
+		bFrozen = true;
 
 		// Decrease amount of lives of the user
-		--this->playerLifes;
+		this->playerLifes--;
 
 		// Trigger visual effect on explosion
 		if (ExplosionFX != nullptr) {
@@ -263,8 +256,9 @@ void ASIPawn::PostPlayerDestroyed() {
 	// If user has no more lives, trigger event
 	if (this->playerLifes == 0) {
 		UE_LOG(LogTemp, Display, TEXT("Player is dead"));
-		if (MyGameMode)
+		if (MyGameMode) {
 			MyGameMode->PlayerZeroLifes.ExecuteIfBound(this->playerPoints);
+		}
 		return;
 	}
 
@@ -272,11 +266,11 @@ void ASIPawn::PostPlayerDestroyed() {
 
 	// If user still had some lives left, restore the mesh and allow the user to keep moving
 	UStaticMeshComponent* LocalMeshComponent = Cast<UStaticMeshComponent>(GetComponentByClass(UStaticMeshComponent::StaticClass()));
-	// Show Static Mesh Component
+
 	if (LocalMeshComponent != nullptr) {
 		LocalMeshComponent->SetVisibility(true);
 	}
-	// Unfrozing
+
 	bFrozen = false;
 
 }
@@ -292,14 +286,17 @@ void ASIPawn::InvaderDestroyed(int32 id, bool killedByPlayer) {
 	}
 }
 
+// Hurt the player if the squad got near enough
 void ASIPawn::SquadSuccessful() {
 	DestroyPlayer();
 
 	// Regenerate a new squad after the previous one has successfully reached the player
-	if (MyGameMode)
+	if (MyGameMode) {
 		MyGameMode->NewSquad.Broadcast(this->playerLifes);
+	}
 }
 
+// Increase user score whenever a squad is destroyed
 void ASIPawn::SquadDissolved(int32 val) {
 	this->playerPoints += this->pointsPerSquad;
 }

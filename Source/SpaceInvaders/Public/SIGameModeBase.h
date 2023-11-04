@@ -16,7 +16,6 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOneParamMulticastDelegateSignature, int32)
 DECLARE_DELEGATE_OneParam(FOneParamDelegateSignature, int32)
 DECLARE_DELEGATE_OneParam(FOneLongIntParamDelegateSignature, int64)
 DECLARE_MULTICAST_DELEGATE_TwoParams(FTwoParamsMulticastDelegateSignature, int32, bool)
-//DECLARE_DELEGATE_OneParam(FSegmentDestroyedDelegateSignature, int32);
 
 /**
  * 
@@ -56,7 +55,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	AInvaderSquad* spawnedInvaderSquad;
 
-	int32 destroyedSquads;
+	int32 numDestroyedSquads;
 
 public:
 
@@ -69,8 +68,6 @@ public:
 
 	FOneParamMulticastDelegateSignature NewSquad;			// Squad -> Game Mode 
 	FOneLongIntParamDelegateSignature PlayerZeroLifes;		// Player -> Game Mode
-
-	// FSegmentDestroyedDelegateSignature SegmentDestroyed;	// Barrier segment -> Barrier
 
 protected:
 

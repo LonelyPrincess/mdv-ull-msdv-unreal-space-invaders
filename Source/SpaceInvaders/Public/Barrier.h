@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -19,10 +17,10 @@ public:
 	FSegmentDestroyedDelegateSignature SegmentDestroyed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrier config")
-	int32 nRows;
+	int32 numRows;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrier config")
-	int32 nCols;
+	int32 numColumns;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrier config")
 	TSubclassOf<class ABarrierSegment> segmentClass;
@@ -31,12 +29,13 @@ public:
 	TArray<class ABarrierSegment*> barrierSegments;
 
 	UPROPERTY(VisibleAnywhere)
-	int32 numSegments;
+	int32 numActiveSegments;
 
 	// Sets default values for this actor's properties
 	ABarrier();
 
 protected:
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -45,6 +44,7 @@ protected:
 	void SpawnBarrierSegments();
 
 public:
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

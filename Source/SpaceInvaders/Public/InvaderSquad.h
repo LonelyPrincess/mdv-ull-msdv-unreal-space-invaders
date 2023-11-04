@@ -75,11 +75,11 @@ protected:
 
 	// Number of rows in squad
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
-	int32 nRows;
+	int32 numRows;
 
 	// Number of invaders on each row
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
-	int32 nCols;
+	int32 numColumns;
 
 	// Gap between squad members
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Squad Spawner")
@@ -97,7 +97,7 @@ protected:
 
 private:
 
-	int32 numberOfMembers;
+	int32 numActiveMembers;
 
 	TArray<int32> oddsArray;
 	TArray<class AInvader*> invaderTemplates;
@@ -109,8 +109,8 @@ private:
 	float timeFromLastFreeJump;
 
 	// Values for initializing defaults
-	static const int32 defaultNRows = 1;
-	static const int32 defaultNCols = 1;
+	static const int32 defaultNumRows = 1;
+	static const int32 defaultNumColumns = 1;
 	static constexpr const float defaultHorizontalVelocity = 1000.0f;
 	static constexpr const float defaultVerticalVelocity = 1000.0f;
 	static constexpr const float defaultExtraSeparation = 0.0f;

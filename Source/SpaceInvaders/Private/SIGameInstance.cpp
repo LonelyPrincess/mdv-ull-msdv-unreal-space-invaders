@@ -3,11 +3,11 @@
 #include "SISaveGame.h"
 #include "Kismet/GameplayStatics.h"
 
-// Attempt to load previous save data as soon as the game starts
 USIGameInstance::USIGameInstance()
 {
 	UE_LOG(LogTemp, Display, TEXT("Game instance created"));
 
+	// Attempt to load previous save data as soon as the game starts
 	SavedGameData = Cast<USISaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlot, UserIndex));
 
 	// If no previous data is found, create a new save slot

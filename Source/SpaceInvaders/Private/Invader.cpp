@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Invader.h"
 #include "SIGameModeBase.h"
 #include "NiagaraFunctionLibrary.h"
@@ -78,8 +75,9 @@ void AInvader::Tick(float DeltaTime)
 
 	// Randomly trigger a new shoot (higher chance of firing after a long time since last shot)
 	float val = FMath::RandRange(0.0f, 1.0f);
-	if (!bFrozen && val < (1.0 - FMath::Exp(-fireRate * this->timeFromLastShot)))
+	if (!bFrozen && val < (1.0 - FMath::Exp(-fireRate * this->timeFromLastShot))) {
 		Fire();
+	}
 
 }
 
