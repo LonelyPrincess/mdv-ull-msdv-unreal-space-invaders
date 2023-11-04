@@ -1,5 +1,5 @@
-#include "Barrier.h"
 #include "BarrierSegment.h"
+#include "Barrier.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
