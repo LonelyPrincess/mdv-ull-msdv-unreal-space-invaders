@@ -6,7 +6,7 @@ ASIGameModeBase::ASIGameModeBase()
 	: spawnLocation{ }
 	, baseSpeedIncrease{ 0.1f }
 	, spawnedInvaderSquad{}
-	, destroyedSquads{ 0 }
+	, numDestroyedSquads{ 0 }
 {
 	DefaultPawnClass = ASIPawn::StaticClass();
 	PlayerControllerClass = ASIPlayerController::StaticClass();
@@ -41,8 +41,8 @@ void ASIGameModeBase::RegenerateSquad()
 		this->spawnedInvaderSquad = Cast<AInvaderSquad>(GetWorld()->SpawnActor(InvaderSquadClass, &spawnLocation));
 
 		// Increase speed of the new squad based on the amount of previously destroyed squads
-		if (destroyedSquads > 0) {
-			float multiplier = 1.0f + ((float) destroyedSquads * baseSpeedIncrease);
+		if (numDestroyedSquads > 0) {
+			float multiplier = 1.0f + ((float) numDestroyedSquads * baseSpeedIncrease);
 			UE_LOG(LogTemp, Display, TEXT("Speed for new squad will be x%f times faster than the default velocity"), multiplier);
 			this->spawnedInvaderSquad->IncreaseSpeed(multiplier);
 		}
@@ -52,8 +52,8 @@ void ASIGameModeBase::RegenerateSquad()
 // Handler for new squad event
 void ASIGameModeBase::OnNewSquad(int32 lifes) 
 {
-	destroyedSquads++;
-	UE_LOG(LogTemp, Display, TEXT("%i squads have been destroyed"), destroyedSquads);
+	numDestroyedSquads++;
+	UE_LOG(LogTemp, Display, TEXT("%i squads have been destroyed"), numDestroyedSquads);
 
 	UE_LOG(LogTemp, Display, TEXT("Generating new squad..."));
 	RegenerateSquad();

@@ -1,14 +1,11 @@
-
-
-
 #include "Barrier.h"
 #include "BarrierSegment.h"
 
 // Sets default values
 ABarrier::ABarrier()
-	: nRows{ 2 }
-	, nCols{ 5 }
-	, numSegments{ 0 }
+	: numRows{ 2 }
+	, numColumns{ 5 }
+	, numActiveSegments{ 0 }
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -20,13 +17,14 @@ void ABarrier::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Subscribe to segment destroyed event
 	UWorld* TheWorld = GetWorld();
-
 	SegmentDestroyed.BindUObject(this, &ABarrier::OnSegmentDestroyed);
 
 	SpawnBarrierSegments();
 }
 
+// Generate segments to compose a barrier
 void ABarrier::SpawnBarrierSegments() {
 	float radiusX = 0.0f;
 	float radiusY = 0.0f;
@@ -47,15 +45,15 @@ void ABarrier::SpawnBarrierSegments() {
 	}
 
 	// Create a new segment on each cell of the barrier grid
-	for (int i = 0; i < this->nCols; i++)
+	for (int i = 0; i < this->numColumns; i++)
 	{
-		for (int j = 0; j < this->nRows; j++)
+		for (int j = 0; j < this->numRows; j++)
 		{
 			spawnedSegment = GetWorld()->SpawnActor<ABarrierSegment>(spawnLocation, spawnRotation, spawnParameters);
-			spawnedSegment->SetSegmentIndex(numSegments);
+			spawnedSegment->SetSegmentIndex(numActiveSegments);
 			barrierSegments.Add(spawnedSegment);
 			spawnedSegment->SetParent(this);
-			this->numSegments += 1;
+			this->numActiveSegments += 1;
 
 			// Increase offset for next spawn
 			float r = spawnedSegment->GetBoundRadius();
@@ -78,17 +76,17 @@ void ABarrier::Tick(float DeltaTime)
 
 }
 
-// TODO: this event is being received by the two barriers!! 
-// We need to identify if the segment belongs to this instance or not, otherwise we don't have to delete anything
-// TODO: destroy when no more segments are alive
+// Handler for segment destroyed event
 void ABarrier::OnSegmentDestroyed(int32 index) {
 
 	barrierSegments[index] = nullptr;
-	this->numSegments -= 1;
-	UE_LOG(LogTemp, Warning, TEXT("Barrier has %i segments left"), this->numSegments);
-	if (this->numSegments == 0) {
+	this->numActiveSegments -= 1;
+	UE_LOG(LogTemp, Warning, TEXT("Barrier %s has %i segments left"), *FString(GetName()), this->numActiveSegments);
+
+	// Destroy barrier once there are no more segments still intact
+	if (this->numActiveSegments == 0) {
 		UE_LOG(LogTemp, Warning, TEXT("Barrier is down!"));
-		// Destroy();
+		Destroy();
 	}
 
 }

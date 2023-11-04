@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "InvaderSquad.h"
 #include "SIGameModeBase.h"
 
@@ -14,10 +11,10 @@ AInvaderSquad::AInvaderSquad()
 	, freeJumpRate{ 0.0001 }
 	, horizontalVelocity{ 300.0 }
 	, verticalVelocity{ 300.0 }
-	, nRows{ AInvaderSquad::defaultNRows }
-	, nCols{ AInvaderSquad::defaultNCols }
+	, numRows{ AInvaderSquad::defaultNumRows }
+	, numColumns{ AInvaderSquad::defaultNumColumns }
 	, extraSeparation(AInvaderSquad::defaultExtraSeparation)
-	, numberOfMembers{ nRows * nCols }
+	, numActiveMembers{ 0 }
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -88,8 +85,6 @@ void AInvaderSquad::BeginPlay()
 			MyGameMode->SquadOnRightSide.BindUObject(this, &AInvaderSquad::SquadOnRightSide);
 			MyGameMode->SquadOnLeftSide.BindUObject(this, &AInvaderSquad::SquadOnLeftSide);
 			MyGameMode->SquadFinishesDown.BindUObject(this, &AInvaderSquad::SquadFinishesDown);
-
-			// Identify methods that will trigger a specific event (?)
 			MyGameMode->InvaderDestroyed.AddUObject(this, &AInvaderSquad::RemoveInvader);
 		}
 	}
@@ -108,9 +103,9 @@ void AInvaderSquad::BeginPlay()
 	float radiusY = 0.0f;
 
 	// Create a new invader on each cell of the squad grid
-	for (int i = 0; i < this->nCols; i++)
+	for (int i = 0; i < this->numColumns; i++)
 	{
-		for (int j = 0; j < this->nRows; j++)
+		for (int j = 0; j < this->numRows; j++)
 		{
 			spawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			spawnParameters.Template = FetchRandomInvaderTemplate();
@@ -129,7 +124,7 @@ void AInvaderSquad::BeginPlay()
 		spawnLocation.Y += radiusY * 2 + this->extraSeparation;
 	}
 
-	this->numberOfMembers = count;
+	this->numActiveMembers = count;
 
 	// By default, move to right
 	this->state = InvaderMovementType::RIGHT;
@@ -191,7 +186,6 @@ void AInvaderSquad::UpdateSquadState(float delta) {
 		int32 ind = FMath::RandRange(0, countSurvivors - 1); // Randomly select one of the living invaders
 		UInvaderMovementComponent* imc = (UInvaderMovementComponent*)survivors[ind]->GetComponentByClass(UInvaderMovementComponent::StaticClass());
 		if (imc) {
-			// GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Blue, FString::Printf(TEXT("%s on FreeJump"), *(imc->GetName())));
 			// Fire rate for bersek invaders will increase drastically, so they're more likely to attack the player
 			survivors[ind]->fireRate *= 100;
 			imc->state = InvaderMovementType::FREEJUMP;
@@ -214,9 +208,9 @@ void AInvaderSquad::SquadOnLeftSide() {
 // Event handler for invader to have descended enough and need to halt vertical movement
 void AInvaderSquad::SquadFinishesDown() {
 	static int32 countActions = 0;
-	++countActions;
+	countActions++;
 
-	if (countActions >= numberOfMembers) {
+	if (countActions >= numActiveMembers) {
 		countActions = 0;
 		switch (previousState) {
 			case InvaderMovementType::RIGHT:
@@ -234,8 +228,8 @@ void AInvaderSquad::SquadFinishesDown() {
 // Method to remove an invader from the squad when it dies
 void AInvaderSquad::RemoveInvader(int32 ind, bool killedByPlayer) {
 	SquadMembers[ind] = nullptr;
-	--this->numberOfMembers;
-	if (this->numberOfMembers == 0) {
+	this->numActiveMembers--;
+	if (this->numActiveMembers == 0) {
 		if (MyGameMode != nullptr) {
 			// "Broadcast" triggers the "NewSquad" event when the current squad has lost all its members
 			MyGameMode->NewSquad.Broadcast(1); // parameter larger than 0 to avoid finishing game!

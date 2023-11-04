@@ -40,6 +40,7 @@ void ABarrierSegment::Tick(float DeltaTime)
 
 }
 
+// Break segment when colliding with other actors
 void ABarrierSegment::NotifyActorBeginOverlap(AActor* OtherActor) {
 
 	UE_LOG(LogTemp, Warning, TEXT("Barrier segment %i overlapped with %s"), this->segmentIndex, *(OtherActor->GetName()));
@@ -50,6 +51,7 @@ void ABarrierSegment::NotifyActorBeginOverlap(AActor* OtherActor) {
 	// Disable collisions so this doesn't run again
 	SetActorEnableCollision(false);
 
+	// Show FX when barrier breaks
 	if (BarrierBreakFX != nullptr) {
 		UNiagaraFunctionLibrary::SpawnSystemAttached(BarrierBreakFX, RootComponent, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
 	}
@@ -68,15 +70,18 @@ float ABarrierSegment::GetBoundRadius() {
 	return this->boundRadius;
 }
 
+// Store position of segment in parent barrier
 void ABarrierSegment::SetSegmentIndex(int32 index) {
 	UE_LOG(LogTemp, Warning, TEXT("Barrier segment assigned index %i"), index);
 	this->segmentIndex = index;
 }
 
+// Store reference to parent barrier
 void ABarrierSegment::SetParent(ABarrier* barrier) {
 	this->parent = barrier;
 }
 
+// Destroy segment and notify parent barrier
 void ABarrierSegment::SelfDestruct() {
 	UE_LOG(LogTemp, Warning, TEXT("Barrier segment %i is running self-destruct!"), this->segmentIndex);
 	if (parent != nullptr) {

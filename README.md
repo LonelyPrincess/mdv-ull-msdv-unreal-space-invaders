@@ -203,8 +203,8 @@ The forementioned property will be used to increase the game difficulty every ti
 
 ```c++
 // Increase speed of the new squad based on the amount of previously destroyed squads
-if (destroyedSquads > 0) {
-	float multiplier = 1.0f + ((float) destroyedSquads * baseSpeedIncrease);
+if (numDestroyedSquads > 0) {
+	float multiplier = 1.0f + ((float) numDestroyedSquads * baseSpeedIncrease);
 	this->spawnedInvaderSquad->IncreaseSpeed(multiplier);
 }
 ```
@@ -215,7 +215,7 @@ The `IncreaseSpeed` method of the `InvaderSquad` class will apply the specified 
 - Squad's `verticalVelocity` (to increase movement speed in the vertical axis)
 - Each squad member's `fireRate` (to increase odds of them firing)
 
-As we can see in the code above, the multiplier applied to the squad speed will be dependant on the amount of squads that have been destroyed so far (`destroyedSquads`). The more squads have been destroyed, the faster the newly generated squad will move.
+As we can see in the code above, the multiplier applied to the squad speed will be dependant on the amount of squads that have been destroyed so far (`numDestroyedSquads`). The more squads have been destroyed, the faster the newly generated squad will move.
 
 The following picture illustrates the result by applying a `baseSpeedIncrease` of `1`. This means speed for the second squad will double the speed of the first, so it's easy to notice the difference between them on a short time span.
 
