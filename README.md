@@ -6,7 +6,7 @@ This project contains a custom implementation of the _Space Invaders_ game devel
 
 In this game **the player will control a ship and gain points by surviving to the attacks of hordes of enemies** which move on squads. The more ships are taken down during the course of the game, the highest the player score will be.
 
-Players will be able to move to the sides and shoot. Destroying invaders will be key to make dodging enemy attacks more easily and survive for longer periods of time, so this fire mechanic is key to achieve a good score.
+Players will be able to move to the sides and shoot. Destroying invaders will be key to make dodging enemy attacks easier and survive for longer periods of time, so this fire mechanic is key to achieve a good score.
 
 ### 🎮 Game controls
 
@@ -294,11 +294,12 @@ void ABarrierSegment::SelfDestruct() {
 ### 🎨 Resources
 
 - [Space Invaders - UE4](https://github.com/iestevez/spaceinvaders)
-- [Space Invaders - UE5](https://github.com/iestevez/spaceinvaders_ue5)
 - [Open Game Art: LAB textures](https://opengameart.org/content/lab-textures)
+- [Open Game Art: Purple Space Ship](https://opengameart.org/content/purple-space-ship)
 
 ### 🔗 References
 
+- [Space Invaders - UE5](https://github.com/iestevez/spaceinvaders_ue5)
 - [Unreal Engine Docs - Saving and loading your game](https://docs.unrealengine.com/5.3/en-US/saving-and-loading-your-game-in-unreal-engine/)
 - [Awesometuts - Saving and loading game data in Unreal Engine](https://awesometuts.com/blog/save-load-game-data-unreal-engine/#elementor-toc__heading-anchor-8)
 - [Epic Games Dev Community - Using Niagara in C++](https://dev.epicgames.com/community/learning/tutorials/Gx5j/using-niagara-in-c)
